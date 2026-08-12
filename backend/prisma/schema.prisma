@@ -6,6 +6,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -13,7 +14,60 @@ model User {
   name      String
   email     String   @unique
   password  String
+  phone     String?
+  address   String?
   role      String   @default("USER")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  danaBookings     DanaBooking[] @relation("UserBookings")
+  approvedBookings DanaBooking[] @relation("ApprovedBookings")
+  approvedPayments DanaPayment[] @relation("ApprovedPayments")
+}
+
+enum Status {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model DanaBooking {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  whatsapp  String
+  address   String
+  month     String
+  day       String
+  mealType  String   @default("NOON") // MORNING, NOON, EVENING
+  purpose   String
+  createdAt DateTime @default(now())
+  
+  status    Status   @default(PENDING)
+  
+  userId    Int?
+  user      User?    @relation("UserBookings", fields: [userId], references: [id])
+  
+  approvedById Int?
+  approvedBy   User? @relation("ApprovedBookings", fields: [approvedById], references: [id])
+  
+  payments  DanaPayment[]
+}
+
+model DanaPayment {
+  id                Int         @id @default(autoincrement())
+  danaBookingId     Int
+  danaBooking       DanaBooking @relation(fields: [danaBookingId], references: [id])
+  year              String
+  payerName         String
+  payerPhone        String
+  amount            String
+  receiptUrl        String
+  punyanumodanaSent Boolean     @default(false)
+  createdAt         DateTime    @default(now())
+
+  status            Status      @default(PENDING)
+  
+  approvedById      Int?
+  approvedBy        User?       @relation("ApprovedPayments", fields: [approvedById], references: [id])
 }

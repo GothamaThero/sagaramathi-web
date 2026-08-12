@@ -5,7 +5,7 @@ import FooterLayout from "./footer.layout";
 
 const RootLayout: React.FC = () => {
   return (
-    <div className="min-h-screen bg-brand-12 text-slate-100 flex flex-col font-sans selection:bg-brand-1 selection:text-white">
+    <div className="min-h-screen bg-bg text-ink flex flex-col selection:bg-brand-1 selection:text-white">
       <HeaderLayout />
       <main className="flex-1">
         <Outlet />

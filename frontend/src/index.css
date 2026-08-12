@@ -1,20 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+Sinhala:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
+@import "./styles/tokens.css";
 
-:root {
-  --color-1: #BC0032;
-  --color-2: #B0002F;
-  --color-3: #A4002C;
-  --color-4: #980028;
-  --color-5: #8C0025;
-  --color-6: #800022;
-  --color-7: #75001F;
-  --color-8: #6A001C;
-  --color-9: #5F0019;
-  --color-10: #540016;
-  --color-11: #490013;
-  --color-12: #3F000E;
-}
-
+/* ============================================================
+   BRAND PALETTE  — crimson scale
+   ============================================================ */
 @theme {
   --color-brand-1: #BC0032;
   --color-brand-2: #B0002F;
@@ -30,8 +20,61 @@
   --color-brand-12: #3F000E;
 }
 
-body {
-  background-color: var(--color-12);
-  color: #F8FAFC;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+/* ============================================================
+   SEMANTIC THEME TOKENS  — change here to re-theme everything
+   ============================================================ */
+:root {
+  /* backgrounds */
+  --c-bg:        #FFF5F7;   /* page background        */
+  --c-surface:   #ffffff;   /* card / panel           */
+  --c-surface-2: #FFF5F7;   /* tinted surface / inputs */
+
+  /* text */
+  --c-ink:       #1a0810;   /* primary text           */
+  --c-muted:     #64748b;   /* secondary text         */
+  --c-subtle:    #94a3b8;   /* tertiary / placeholder */
+
+  /* borders  (used directly via var()) */
+  --c-border:    rgba(188, 0, 50, 0.08);
+  --c-border-md: rgba(188, 0, 50, 0.15);
 }
+
+/* Expose semantic tokens as Tailwind utilities
+   e.g. bg-bg, bg-surface, text-ink, text-muted … */
+@theme inline {
+  --color-bg:        var(--c-bg);
+  --color-surface:   var(--c-surface);
+  --color-surface-2: var(--c-surface-2);
+  --color-ink:       var(--c-ink);
+  --color-muted:     var(--c-muted);
+  --color-subtle:    var(--c-subtle);
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+* { box-sizing: border-box; }
+
+body {
+  background-color: var(--c-bg);
+  color: var(--c-ink);
+  font-family: 'Inter', 'Noto Sans Sinhala', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle grid pattern */
+.bg-grid {
+  background-image:
+    linear-gradient(var(--c-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--c-border) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar        { width: 6px; }
+::-webkit-scrollbar-track  { background: var(--c-bg); }
+::-webkit-scrollbar-thumb  { background: #f0c4cc; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-brand-1); }
+
+/* Smooth transitions */
+a, button { transition: all 0.2s ease; }
