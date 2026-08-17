@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_key_change_in_prod
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, address, phone, whatsapp } = req.body;
 
     if (!name || !email || !password) {
       res.status(400).json({ status: "error", message: "Name, email, and password are required" });
@@ -28,12 +28,18 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         name,
         email,
         password: hashedPassword,
+        address: address || null,
+        phone: phone || null,
+        whatsapp: whatsapp || null,
         role: "USER",
       },
       select: {
         id: true,
         name: true,
         email: true,
+        address: true,
+        phone: true,
+        whatsapp: true,
         role: true,
         createdAt: true,
       },
@@ -92,9 +98,24 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
 export const getMe = async (req: any, res: Response): Promise<void> => {
   try {
+    const userId = req.user.userId || req.user.id;
     const user = await prisma.user.findUnique({
-      where: { id: req.user.userId },
-      select: { id: true, name: true, email: true, phone: true, address: true, role: true }
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        whatsapp: true,
+        address: true,
+        city: true,
+        designation: true,
+        bio: true,
+        avatar: true,
+        coverImage: true,
+        role: true,
+        createdAt: true
+      }
     });
     if (!user) {
       res.status(404).json({ status: "error", message: "User not found" });
@@ -108,8 +129,8 @@ export const getMe = async (req: any, res: Response): Promise<void> => {
 
 export const updateProfile = async (req: any, res: Response): Promise<void> => {
   try {
-    const { name, phone, address, currentPassword, newPassword } = req.body;
-    const userId = req.user.userId;
+    const { name, phone, whatsapp, address, city, designation, bio, avatar, coverImage, currentPassword, newPassword } = req.body;
+    const userId = req.user.userId || req.user.id;
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
@@ -117,7 +138,16 @@ export const updateProfile = async (req: any, res: Response): Promise<void> => {
       return;
     }
 
-    const updateData: any = { name, phone, address };
+    const updateData: any = {};
+    if (name !== undefined) updateData.name = name;
+    if (phone !== undefined) updateData.phone = phone;
+    if (whatsapp !== undefined) updateData.whatsapp = whatsapp;
+    if (address !== undefined) updateData.address = address;
+    if (city !== undefined) updateData.city = city;
+    if (designation !== undefined) updateData.designation = designation;
+    if (bio !== undefined) updateData.bio = bio;
+    if (avatar !== undefined) updateData.avatar = avatar;
+    if (coverImage !== undefined) updateData.coverImage = coverImage;
 
     if (newPassword) {
       if (!currentPassword) {
@@ -135,13 +165,86 @@ export const updateProfile = async (req: any, res: Response): Promise<void> => {
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: updateData,
-      select: { id: true, name: true, email: true, phone: true, address: true, role: true }
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        whatsapp: true,
+        address: true,
+        city: true,
+        designation: true,
+        bio: true,
+        avatar: true,
+        coverImage: true,
+        role: true
+      }
     });
+
+    // Sync updated authorName across posts
+    if (name && name !== user.name) {
+      await prisma.post.updateMany({
+        where: { userId },
+        data: { authorName: name }
+      });
+      await prisma.postComment.updateMany({
+        where: { userId },
+        data: { userName: name }
+      });
+    }
 
     res.status(200).json({ status: "success", data: updatedUser, message: "Profile updated successfully" });
   } catch (error) {
     console.error("Error updating profile:", error);
     res.status(500).json({ status: "error", message: "Failed to update profile" });
+  }
+};
+
+// GET /api/auth/profile/:id - Fetch public profile of any user
+export const getUserPublicProfile = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+    const targetUserId = parseInt(rawId || "0", 10);
+    if (isNaN(targetUserId)) {
+      res.status(400).json({ status: "error", message: "Invalid user ID" });
+      return;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: targetUserId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        whatsapp: true,
+        address: true,
+        city: true,
+        designation: true,
+        bio: true,
+        avatar: true,
+        coverImage: true,
+        role: true,
+        createdAt: true,
+        posts: {
+          orderBy: { createdAt: "desc" },
+          include: {
+            likes: true,
+            comments: true
+          }
+        }
+      }
+    });
+
+    if (!user) {
+      res.status(404).json({ status: "error", message: "User profile not found" });
+      return;
+    }
+
+    res.status(200).json({ status: "success", data: user });
+  } catch (error) {
+    console.error("Error fetching public profile:", error);
+    res.status(500).json({ status: "error", message: "Failed to fetch user profile" });
   }
 };
 

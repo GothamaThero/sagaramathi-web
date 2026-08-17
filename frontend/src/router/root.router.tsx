@@ -16,7 +16,19 @@ import {
   ProfileScreen,
   AdminDanasScreen,
   AdminPendingDanaScreen,
-  AdminPendingPaymentsScreen
+  AdminPendingPaymentsScreen,
+  AdminMonthlyDanasScreen,
+  MonthlyDanaLettersScreen,
+  MonthlyDanaReportScreen,
+  AdminFinanceScreen,
+  AdminChatScreen,
+  AdminCertificatesScreen,
+  AdminTemplateEditorScreen,
+  AdminWhatsappReportsScreen,
+  DonorDanaConfirmScreen,
+  AdminDanaConfirmationsScreen,
+  AdminAuditLogsScreen,
+  MonthlyDanaAddressesScreen
 } from "../screen";
 
 const router = createBrowserRouter([
@@ -27,6 +39,7 @@ const router = createBrowserRouter([
       { index: true, Component: HomeScreen },
       { path: "about", Component: AboutScreen },
       { path: "dana", Component: DanaScreen },
+      { path: "dana/confirm/:id", Component: DonorDanaConfirmScreen },
       { path: "login", Component: LoginScreen },
       { path: "register", Component: RegisterScreen },
       {
@@ -44,6 +57,10 @@ const router = createBrowserRouter([
             <ProfileScreen />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "profile/:id",
+        Component: ProfileScreen,
       },
       // Fallback for old /dashboard route
       {
@@ -94,6 +111,30 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "certificates",
+        element: (
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "ADMIN"]}>
+            <AdminCertificatesScreen />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "templates",
+        element: (
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "ADMIN"]}>
+            <AdminTemplateEditorScreen />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "finance",
+        element: (
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "ADMIN"]}>
+            <AdminFinanceScreen />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "pending-dana",
         element: (
           <ProtectedRoute allowedRoles={["SUPER_ADMIN", "ADMIN"]}>
@@ -108,10 +149,75 @@ const router = createBrowserRouter([
             <AdminPendingPaymentsScreen />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "monthly-danas",
+        element: (
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "ADMIN"]}>
+            <AdminMonthlyDanasScreen />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "monthly-letters/:month",
+        element: (
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "ADMIN"]}>
+            <MonthlyDanaLettersScreen />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "monthly-addresses/:month",
+        element: (
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "ADMIN"]}>
+            <MonthlyDanaAddressesScreen />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "monthly-report/:month",
+        element: (
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "ADMIN"]}>
+            <MonthlyDanaReportScreen />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "chat",
+        element: (
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "ADMIN"]}>
+            <AdminChatScreen />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "whatsapp-reports",
+        element: (
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "ADMIN"]}>
+            <AdminWhatsappReportsScreen />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "dana-confirmations",
+        element: (
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "ADMIN"]}>
+            <AdminDanaConfirmationsScreen />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "audit-logs",
+        element: (
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN", "ADMIN"]}>
+            <AdminAuditLogsScreen />
+          </ProtectedRoute>
+        ),
       }
     ]
   }
 ]);
+
 
 const RootRouter: React.FC = () => {
   return <RouterProvider router={router} />;

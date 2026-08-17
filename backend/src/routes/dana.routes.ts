@@ -7,26 +7,35 @@ import {
   approveDana, 
   rejectDana, 
   deleteDana,
-  updateDana
+  updateDana,
+  getDanaById,
+  exportDanasCSV,
+  getNoticeBoardSheet
 } from "../controllers/dana.controller.js";
 import { verifyToken, requireRole } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
-// Public route: only returns APPROVED danas
+// Public routes
 router.get("/", getDanas);
 
-// Protected routes
+// Protected user routes
 router.post("/", verifyToken, createDana);
 router.get("/me", verifyToken, getMyDanas);
-router.put("/:id", verifyToken, updateDana);
 
 // Admin / Super Admin routes
 router.get("/admin/all", verifyToken, requireRole(["ADMIN", "SUPER_ADMIN"]), getAdminDanas);
+router.get("/admin/export/csv", verifyToken, requireRole(["ADMIN", "SUPER_ADMIN"]), exportDanasCSV);
+router.get("/admin/notice-board", verifyToken, requireRole(["ADMIN", "SUPER_ADMIN"]), getNoticeBoardSheet);
 router.patch("/:id/approve", verifyToken, requireRole(["ADMIN", "SUPER_ADMIN"]), approveDana);
 router.patch("/:id/reject", verifyToken, requireRole(["ADMIN", "SUPER_ADMIN"]), rejectDana);
+
+// Single Dana route (accessible with ID)
+router.get("/:id", getDanaById);
+router.put("/:id", verifyToken, updateDana);
 
 // Super Admin only routes
 router.delete("/:id", verifyToken, requireRole(["SUPER_ADMIN"]), deleteDana);
 
 export default router;
+

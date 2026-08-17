@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useAuth } from "../../context/AuthContext";
 import { EditDanaModal } from "../../component/EditDanaModal";
+import { AdminPaymentModal } from "../../component/AdminPaymentModal";
+import { API_BASE_URL } from "../../libs/api";
 
 export const AdminPendingDanaScreen: React.FC = () => {
   const { user, token } = useAuth();
   const [danas, setDanas] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [editingDana, setEditingDana] = useState<any | null>(null);
+  const [viewingPaymentsDana, setViewingPaymentsDana] = useState<any | null>(null);
 
   useEffect(() => {
     fetchAdminDanas();
@@ -16,7 +19,7 @@ export const AdminPendingDanaScreen: React.FC = () => {
   const fetchAdminDanas = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/api/dana/admin/all", {
+      const response = await fetch(`${API_BASE_URL}/dana/admin/all`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.ok) {
@@ -32,14 +35,14 @@ export const AdminPendingDanaScreen: React.FC = () => {
 
   const handleApprove = async (id: number) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/dana/${id}/approve`, { method: "PATCH", headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE_URL}/dana/${id}/approve`, { method: "PATCH", headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) fetchAdminDanas();
     } catch (error) { console.error("Failed to approve", error); }
   };
 
   const handleReject = async (id: number) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/dana/${id}/reject`, { method: "PATCH", headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE_URL}/dana/${id}/reject`, { method: "PATCH", headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) fetchAdminDanas();
     } catch (error) { console.error("Failed to reject", error); }
   };
@@ -47,7 +50,7 @@ export const AdminPendingDanaScreen: React.FC = () => {
   const handleDeleteDana = async (id: number) => {
     if (!confirm("Are you sure you want to delete this Dana?")) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/dana/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/dana/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -69,14 +72,14 @@ export const AdminPendingDanaScreen: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-ink flex items-center gap-2">
-            <span className="text-brand-1">⏳</span> අනුමත නොකළ දාන (Pending Danas)
+            Pending Danas
           </h1>
         </div>
         <Link
           to="/dana"
           className="flex items-center gap-2 px-5 py-2.5 bg-brand-1 hover:bg-brand-2 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors"
         >
-          + නව දානයක් (Add Dana)
+          + Add Dana
         </Link>
       </div>
 
@@ -84,11 +87,11 @@ export const AdminPendingDanaScreen: React.FC = () => {
       <div className="space-y-8">
         {loading ? (
           <div className="bg-surface border border-brand-1/10 rounded-2xl overflow-hidden shadow-sm py-20 flex flex-col items-center gap-3 text-subtle">
-            <span className="text-sm">දත්ත ලෝඩ් වෙමින්...</span>
+            <span className="text-sm font-semibold">Loading data...</span>
           </div>
         ) : danas.length === 0 ? (
           <div className="bg-surface border border-brand-1/10 rounded-2xl overflow-hidden shadow-sm py-20 flex flex-col items-center gap-3 text-subtle">
-            <p className="text-sm">දාන වෙන් කිරීම් නොමැත</p>
+            <p className="text-sm font-semibold">No Dana bookings found</p>
           </div>
         ) : (
           (Object.entries(
@@ -107,9 +110,9 @@ export const AdminPendingDanaScreen: React.FC = () => {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-brand-1/10 bg-surface-2/50">
-                        <th className="px-5 py-3 text-left font-semibold text-subtle uppercase tracking-wider text-xs">දිනය (Date)</th>
-                        <th className="px-5 py-3 text-left font-semibold text-subtle uppercase tracking-wider text-xs">දායකයා (Applicant)</th>
-                        <th className="px-5 py-3 text-left font-semibold text-subtle uppercase tracking-wider text-xs">දානය (Meal)</th>
+                        <th className="px-5 py-3 text-left font-semibold text-subtle uppercase tracking-wider text-xs">Date</th>
+                        <th className="px-5 py-3 text-left font-semibold text-subtle uppercase tracking-wider text-xs">Applicant</th>
+                        <th className="px-5 py-3 text-left font-semibold text-subtle uppercase tracking-wider text-xs">Meal Type</th>
                         <th className="px-5 py-3 text-left font-semibold text-subtle uppercase tracking-wider text-xs">Status</th>
                         <th className="px-5 py-3 text-right font-semibold text-subtle uppercase tracking-wider text-xs">Actions</th>
                       </tr>
@@ -126,7 +129,7 @@ export const AdminPendingDanaScreen: React.FC = () => {
                           </td>
                           <td className="px-5 py-4">
                             <span className="inline-block px-2 py-1 bg-surface-2 text-muted text-xs font-semibold rounded border border-brand-1/10 whitespace-nowrap">
-                              {dana.mealType === 'MORNING' ? 'හීල් දානය' : dana.mealType === 'NOON' ? 'දවල් දානය' : 'ගිලන්පස'}
+                              {dana.mealType === 'MORNING' ? 'Morning Meal (Heel Dana)' : dana.mealType === 'NOON' ? 'Midday Meal (Dawal Dana)' : 'Evening Refreshments'}
                             </span>
                           </td>
                           <td className="px-5 py-4">
@@ -161,6 +164,13 @@ export const AdminPendingDanaScreen: React.FC = () => {
                                 </button>
                               )}
 
+                              <button
+                                onClick={() => setViewingPaymentsDana(dana)}
+                                className="px-3 py-1 bg-white border border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 rounded text-xs font-semibold transition-colors"
+                              >
+                                View Payments
+                              </button>
+
                               {dana.status === 'PENDING' && (
                                 <>
                                   <button
@@ -192,6 +202,18 @@ export const AdminPendingDanaScreen: React.FC = () => {
 
       {editingDana && (
         <EditDanaModal dana={editingDana} token={token} onClose={() => setEditingDana(null)} onSuccess={() => { setEditingDana(null); fetchAdminDanas(); }} />
+      )}
+
+      {viewingPaymentsDana && (
+        <AdminPaymentModal
+          dana={viewingPaymentsDana}
+          token={token}
+          onClose={() => setViewingPaymentsDana(null)}
+          onRefresh={() => {
+            fetchAdminDanas();
+            setViewingPaymentsDana(null);
+          }}
+        />
       )}
     </div>
   );

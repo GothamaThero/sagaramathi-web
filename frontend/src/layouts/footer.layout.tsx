@@ -7,9 +7,13 @@ const FooterLayout: React.FC = () => {
         <p>
           &copy; 2026{" "}
           <span className="text-brand-1 font-semibold">Sagaramati Pirivena</span>
-          {" "}· සියලුම හිමිකම් ඇවිරිණි.
+          {" "}· All rights reserved.
         </p>
-        <p>Powered by React 19 · Express · Prisma · MySQL</p>
+        <p>
+          Designed &amp; Developed by{" "}
+          <strong className="text-brand-1 font-bold">Gothamavansalankara Thero</strong>
+          {" "}| EXONIT (Pvt) Ltd.
+        </p>
       </div>
     </footer>
   );

@@ -1,4 +1,4 @@
-// Prisma schema for Sagaramathi Web
+// Prisma schema for Sagaramati Web
 
 generator client {
   provider = "prisma-client-js"
@@ -14,21 +14,109 @@ model User {
   name      String
   email     String   @unique
   password  String
-  phone     String?
-  address   String?
-  role      String   @default("USER")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  phone        String?
+  whatsapp     String?
+  address      String?
+  city         String?
+  designation  String?
+  bio          String?  @db.Text
+  avatar       String?
+  coverImage   String?
+  role         String   @default("USER")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   danaBookings     DanaBooking[] @relation("UserBookings")
   approvedBookings DanaBooking[] @relation("ApprovedBookings")
   approvedPayments DanaPayment[] @relation("ApprovedPayments")
+  financialTransactions FinancialTransaction[] @relation("UserTransactions")
+  posts            Post[]
+  postLikes        PostLike[]
+  postComments     PostComment[]
+  savedPosts       SavedPost[]
+}
+
+model Post {
+  id           Int           @id @default(autoincrement())
+  content      String        @db.Text
+  mediaUrls    String?       @db.Text // JSON string array of image URLs
+  userId       Int
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  authorName   String
+  authorAvatar String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  likes        PostLike[]
+  comments     PostComment[]
+  savedBy      SavedPost[]
+}
+
+model PostLike {
+  id           Int      @id @default(autoincrement())
+  postId       Int
+  post         Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reactionType String   @default("LIKE") // LIKE (👍), SADHU (☸️), LOVE (❤️)
+  createdAt    DateTime @default(now())
+
+  @@unique([postId, userId])
+}
+
+model PostComment {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userName  String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+}
+
+model Story {
+  id         Int      @id @default(autoincrement())
+  title      String?
+  imageUrl   String
+  authorName String
+  userId     Int?
+  createdAt  DateTime @default(now())
+}
+
+model SavedPost {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
 }
 
 enum Status {
   PENDING
   APPROVED
   REJECTED
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  INVESTMENT
+}
+
+model FinancialTransaction {
+  id          Int             @id @default(autoincrement())
+  date        DateTime        @default(now())
+  description String
+  type        TransactionType
+  amount      Float
+  recordedBy  String          @default("Super Admin")
+  userId      Int?
+  user        User?           @relation("UserTransactions", fields: [userId], references: [id])
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 }
 
 model DanaBooking {
@@ -71,3 +159,36 @@ model DanaPayment {
   approvedById      Int?
   approvedBy        User?       @relation("ApprovedPayments", fields: [approvedById], references: [id])
 }
+
+model SiteSetting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+}
+
+model ChatMessage {
+  id             Int      @id @default(autoincrement())
+  conversationId String   // e.g. "guest_123..." or "user_4"
+  senderId       Int?     // User ID if logged in
+  senderName     String
+  senderRole     String   @default("GUEST") // GUEST, USER, ADMIN, SUPER_ADMIN
+  message        String   @db.Text
+  isRead         Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  @@index([conversationId])
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  userName  String
+  userRole  String   @default("ADMIN")
+  action    String
+  target    String?
+  details   String?  @db.Text
+  ipAddress String?
+  createdAt DateTime @default(now())
+}
+

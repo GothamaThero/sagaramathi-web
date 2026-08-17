@@ -42,7 +42,7 @@ export const AdminCalendar = ({ danas }: AdminCalendarProps) => {
     endDate.setHours(date.getHours() + 2);
 
     return {
-      title: `${dana.name} (${dana.mealType === 'MORNING' ? 'හීල් දානය' : dana.mealType === 'NOON' ? 'දවල් දානය' : 'ගිලන්පස'}) - ${dana.status}`,
+      title: `${dana.name} (${dana.mealType === 'MORNING' ? 'Morning Meal (Heel Dana)' : dana.mealType === 'NOON' ? 'Midday Meal (Dawal Dana)' : 'Evening Refreshments (Gilampasa)'}) - ${dana.status}`,
       start: date,
       end: endDate,
       status: dana.status,

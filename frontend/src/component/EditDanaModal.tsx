@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { API_BASE_URL } from "../libs/api";
 
 interface EditDanaModalProps {
   dana: any;
@@ -21,8 +22,8 @@ export const EditDanaModal: React.FC<EditDanaModalProps> = ({ dana, onClose, onS
   const [loading, setLoading] = useState(false);
 
   const months = [
-    "ජනවාරි", "පෙබරවාරි", "මාර්තු", "අප්‍රේල්", "මැයි", "ජූනි",
-    "ජූලි", "අගෝස්තු", "සැප්තැම්බර්", "ඔක්තෝබර්", "නොවැම්බර්", "දෙසැම්බර්"
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
   ];
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
@@ -30,7 +31,7 @@ export const EditDanaModal: React.FC<EditDanaModalProps> = ({ dana, onClose, onS
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:3000/api/dana/${dana.id}`, {
+      const response = await fetch(`${API_BASE_URL}/dana/${dana.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -55,7 +56,7 @@ export const EditDanaModal: React.FC<EditDanaModalProps> = ({ dana, onClose, onS
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-ink/40 backdrop-blur-sm">
       <div className="bg-surface rounded-3xl p-8 max-w-2xl w-full shadow-2xl relative max-h-[90vh] overflow-y-auto">
-        <button onClick={onClose} className="absolute top-4 right-4 text-subtle text-xl">✕</button>
+        <button onClick={onClose} className="absolute top-4 right-4 text-subtle text-xs font-bold px-2 py-1 bg-surface-2 rounded-lg">Close</button>
         <h2 className="text-2xl font-bold mb-6">Update Dana Booking</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -3,6 +3,7 @@ import prisma from "../config/db.js";
 
 export const getDashboardStats = async (req: Request, res: Response): Promise<void> => {
   try {
+    const totalUsers = await prisma.user.count();
     const totalBookings = await prisma.danaBooking.count();
     const pendingBookings = await prisma.danaBooking.count({ where: { status: "PENDING" } });
     const approvedBookings = await prisma.danaBooking.count({ where: { status: "APPROVED" } });
@@ -15,13 +16,16 @@ export const getDashboardStats = async (req: Request, res: Response): Promise<vo
     
     let totalIncome = 0;
     payments.forEach(p => {
-      const amount = parseFloat(p.amount.replace(/[^0-9.-]+/g,""));
+      const rawAmount = String(p.amount || "");
+      const amount = parseFloat(rawAmount.replace(/[^0-9.-]+/g,""));
       if (!isNaN(amount)) totalIncome += amount;
     });
+
 
     res.status(200).json({
       status: "success",
       data: {
+        totalUsers,
         totalBookings,
         pendingBookings,
         approvedBookings,

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { API_BASE_URL, SERVER_URL } from "../../libs/api";
 
 export const AdminPendingPaymentsScreen: React.FC = () => {
   const { token } = useAuth();
@@ -13,7 +14,7 @@ export const AdminPendingPaymentsScreen: React.FC = () => {
   const fetchAdminPayments = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/api/dana/admin/all", {
+      const response = await fetch(`${API_BASE_URL}/dana/admin/all`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.ok) {
@@ -35,16 +36,20 @@ export const AdminPendingPaymentsScreen: React.FC = () => {
     }
   };
 
+  const handleExportCSV = () => {
+    window.open(`${API_BASE_URL}/payments/admin/export/csv`, "_blank");
+  };
+
   const handleApprove = async (id: number) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/payments/${id}/approve`, { method: "PATCH", headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE_URL}/payments/${id}/approve`, { method: "PATCH", headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) fetchAdminPayments();
     } catch (error) { console.error("Failed to approve payment", error); }
   };
 
   const handleReject = async (id: number) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/payments/${id}/reject`, { method: "PATCH", headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE_URL}/payments/${id}/reject`, { method: "PATCH", headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) fetchAdminPayments();
     } catch (error) { console.error("Failed to reject payment", error); }
   };
@@ -54,19 +59,26 @@ export const AdminPendingPaymentsScreen: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-ink flex items-center gap-2">
-            <span className="text-brand-1">💳</span> අනුමත නොකළ ගෙවීම් (Pending Payments)
+            Pending Payments
           </h1>
         </div>
+        <button
+          onClick={handleExportCSV}
+          className="flex items-center gap-1.5 px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-bold rounded-xl shadow-sm transition-all self-start sm:self-auto"
+        >
+          📊 Export CSV
+        </button>
       </div>
+
 
       <div className="space-y-8">
         {loading ? (
           <div className="bg-surface border border-brand-1/10 rounded-2xl overflow-hidden shadow-sm py-20 flex flex-col items-center gap-3 text-subtle">
-            <span className="text-sm">දත්ත ලෝඩ් වෙමින්...</span>
+            <span className="text-sm font-semibold">Loading data...</span>
           </div>
         ) : payments.length === 0 ? (
           <div className="bg-surface border border-brand-1/10 rounded-2xl overflow-hidden shadow-sm py-20 flex flex-col items-center gap-3 text-subtle">
-            <p className="text-sm">අනුමත කිරීමට ගෙවීම් නොමැත</p>
+            <p className="text-sm font-semibold">No pending payments to approve</p>
           </div>
         ) : (
           <div className="bg-surface border border-brand-1/10 rounded-2xl overflow-hidden shadow-sm">
@@ -74,10 +86,10 @@ export const AdminPendingPaymentsScreen: React.FC = () => {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-brand-1/10 bg-surface-2/50">
-                    <th className="px-5 py-3 text-left font-semibold text-subtle uppercase tracking-wider text-xs">දානය (Dana)</th>
-                    <th className="px-5 py-3 text-left font-semibold text-subtle uppercase tracking-wider text-xs">ගෙවන්නා (Payer)</th>
-                    <th className="px-5 py-3 text-left font-semibold text-subtle uppercase tracking-wider text-xs">මුදල (Amount)</th>
-                    <th className="px-5 py-3 text-left font-semibold text-subtle uppercase tracking-wider text-xs">රිසිට් පත (Receipt)</th>
+                    <th className="px-5 py-3 text-left font-semibold text-subtle uppercase tracking-wider text-xs">Dana</th>
+                    <th className="px-5 py-3 text-left font-semibold text-subtle uppercase tracking-wider text-xs">Payer</th>
+                    <th className="px-5 py-3 text-left font-semibold text-subtle uppercase tracking-wider text-xs">Amount</th>
+                    <th className="px-5 py-3 text-left font-semibold text-subtle uppercase tracking-wider text-xs">Receipt</th>
                     <th className="px-5 py-3 text-right font-semibold text-subtle uppercase tracking-wider text-xs">Actions</th>
                   </tr>
                 </thead>
@@ -92,11 +104,11 @@ export const AdminPendingPaymentsScreen: React.FC = () => {
                         <div className="text-xs text-subtle mt-0.5">{payment.payerPhone}</div>
                       </td>
                       <td className="px-5 py-4 font-bold text-green-600">
-                        රු. {payment.amount}
+                        LKR {payment.amount}
                       </td>
                       <td className="px-5 py-4">
                         <a 
-                          href={`http://localhost:3000${payment.receiptUrl}`} 
+                          href={`${SERVER_URL}${payment.receiptUrl}`} 
                           target="_blank" 
                           rel="noreferrer"
                           className="text-brand-1 hover:underline text-xs font-bold"

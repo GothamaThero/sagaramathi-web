@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { API_BASE_URL } from "../libs/api";
 
 interface AnalyticsChartsProps {
   token: string | null;
@@ -7,26 +8,62 @@ interface AnalyticsChartsProps {
 
 export const AnalyticsCharts = ({ token }: AnalyticsChartsProps) => {
   const [stats, setStats] = useState<any>(null);
-
-  useEffect(() => {
-    if (token) fetchStats();
-  }, [token]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchStats = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/analytics/stats", {
-        headers: { Authorization: `Bearer ${token}` }
+      setLoading(true);
+      setError(null);
+      const activeToken = token || localStorage.getItem("token");
+      const res = await fetch(`${API_BASE_URL}/analytics/stats`, {
+        headers: { Authorization: `Bearer ${activeToken}` }
       });
       if (res.ok) {
         const data = await res.json();
         setStats(data.data);
+      } else {
+        setError("Failed to load dashboard statistics.");
       }
     } catch (error) {
       console.error("Failed to fetch stats", error);
+      setError("Unable to connect to backend server.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!stats) return null;
+  useEffect(() => {
+    fetchStats();
+  }, [token]);
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className="bg-surface p-6 rounded-xl border border-brand-1/10 animate-pulse min-h-[120px]">
+            <div className="h-4 bg-gray-200 rounded w-1/2 mb-3"></div>
+            <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (error || !stats) {
+    return (
+      <div className="bg-surface p-6 rounded-xl border border-brand-1/10 text-center space-y-3">
+        <p className="text-sm font-semibold text-rose-600">{error || "No data available."}</p>
+        <button
+          onClick={fetchStats}
+          className="px-4 py-2 bg-brand-1 text-white text-xs font-bold rounded-lg shadow hover:bg-brand-2 transition-all"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
 
   const pieData = [
     { name: "Approved", value: stats.approvedBookings },
@@ -40,13 +77,13 @@ export const AnalyticsCharts = ({ token }: AnalyticsChartsProps) => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {/* Total Users Card */}
       <div className="bg-surface p-6 rounded-xl shadow-sm border border-brand-1/10 flex flex-col justify-center min-h-[120px]">
-        <h3 className="text-sm font-semibold text-subtle mb-3">මුළු පරිශීලකයින් (Total Users)</h3>
+        <h3 className="text-sm font-semibold text-subtle mb-3">Total Users</h3>
         <p className="text-3xl font-black text-ink">{stats.totalUsers || 0}</p>
       </div>
       
       {/* Total Bookings Card */}
       <div className="bg-surface p-6 rounded-xl shadow-sm border border-brand-1/10 flex flex-col justify-center min-h-[120px]">
-        <h3 className="text-sm font-semibold text-subtle mb-3">මුළු දාන ප්‍රමාණය (Total Danas)</h3>
+        <h3 className="text-sm font-semibold text-subtle mb-3">Total Danas</h3>
         <div className="flex items-baseline gap-2">
           <p className="text-3xl font-black text-ink">{stats.totalBookings}</p>
           <span className="text-sm font-semibold text-amber-500">{stats.pendingBookings} pending</span>
@@ -55,13 +92,13 @@ export const AnalyticsCharts = ({ token }: AnalyticsChartsProps) => {
 
       {/* Income Card */}
       <div className="bg-surface p-6 rounded-xl shadow-sm border border-brand-1/10 flex flex-col justify-center min-h-[120px]">
-        <h3 className="text-sm font-semibold text-subtle mb-3">මුළු ආදායම (Total Income)</h3>
+        <h3 className="text-sm font-semibold text-subtle mb-3">Total Income</h3>
         <p className="text-3xl font-black text-brand-1">Rs. {stats.totalIncome.toLocaleString()}</p>
       </div>
 
       {/* Approved Bookings Card */}
       <div className="bg-surface p-6 rounded-xl shadow-sm border border-brand-1/10 flex flex-col justify-center min-h-[120px]">
-        <h3 className="text-sm font-semibold text-subtle mb-3">අනුමත දාන (Approved Danas)</h3>
+        <h3 className="text-sm font-semibold text-subtle mb-3">Approved Danas</h3>
         <p className="text-3xl font-black text-green-600">{stats.approvedBookings}</p>
       </div>
 

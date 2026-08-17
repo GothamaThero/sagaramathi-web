@@ -7,17 +7,49 @@ import danaRoutes from "./routes/dana.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import analyticsRoutes from "./routes/analytics.routes.js";
+import financeRoutes from "./routes/finance.routes.js";
+import postRoutes from "./routes/post.routes.js";
+import settingRoutes from "./routes/setting.routes.js";
+import chatRoutes from "./routes/chat.routes.js";
+import whatsappReportRoutes from "./routes/whatsappReport.routes.js";
+import danaConfirmationRoutes from "./routes/danaConfirmation.routes.js";
+import { runAutomatedDanaRemindersCron } from "./services/cron.service.js";
+
+// Import Custom Middlewares
+import { securityHeaders } from "./middleware/security.middleware.js";
+import { requestLogger } from "./middleware/requestLogger.middleware.js";
+import { apiRateLimiter, authRateLimiter } from "./middleware/rateLimiter.middleware.js";
+import { notFoundHandler, errorHandler } from "./middleware/error.middleware.js";
 
 const server = express();
 
-// Middleware
-server.use(cors());
+// Security and Logging Middlewares
+server.use(securityHeaders);
+server.use(requestLogger);
+
+// CORS & Body Parser Middlewares
+const allowedOrigins = process.env.FRONTEND_URL 
+  ? process.env.FRONTEND_URL.split(",") 
+  : ["http://localhost:5173", "http://localhost:5174", "http://localhost:3000", "http://127.0.0.1:5173", "http://127.0.0.1:5174"];
+
+server.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, postman) or if allowed origin matches
+    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== "production") {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
+
 server.use(express.json());
 
 // Root test route
 server.get("/", (req, res) => {
   res.send({
-    message: "Sagaramathi API is running",
+    message: "Sagaramati API is running",
     version: "1.0.0",
     status: "success",
   });
@@ -26,12 +58,28 @@ server.get("/", (req, res) => {
 // Serve static uploads
 server.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
+// Global API Rate Limiter
+server.use("/api", apiRateLimiter);
+
+// Specific Auth Rate Limiter
+server.use("/api/auth", authRateLimiter);
+
 // API Routes
 server.use("/api/auth", authRoutes);
 server.use("/api/users", userRoutes);
 server.use("/api/dana", danaRoutes);
 server.use("/api/payments", paymentRoutes);
 server.use("/api/analytics", analyticsRoutes);
+server.use("/api/finance", financeRoutes);
+server.use("/api/posts", postRoutes);
+server.use("/api/settings", settingRoutes);
+server.use("/api/chat", chatRoutes);
+server.use("/api/whatsapp-reports", whatsappReportRoutes);
+server.use("/api/dana-confirm", danaConfirmationRoutes);
+
+// 404 Not Found & Global Error Handling Middlewares
+server.use(notFoundHandler);
+server.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 
@@ -39,4 +87,6 @@ server.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
   // Runtime database auto-creation and schema sync
   await ensureDatabaseExists();
+  // Trigger initial automated Dana reminders cron check
+  runAutomatedDanaRemindersCron();
 });

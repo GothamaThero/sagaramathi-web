@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useAuth } from "../../context/AuthContext";
 import { EditDanaModal } from "../../component/EditDanaModal";
+import { AdminPaymentModal } from "../../component/AdminPaymentModal";
 import { AnalyticsCharts } from "../../component/AnalyticsCharts";
 import { AdminCalendar } from "../../component/AdminCalendar";
+import { API_BASE_URL } from "../../libs/api";
 
 export const SuperAdminDashboard = () => {
   const { user, token } = useAuth();
   const [danas, setDanas] = useState<any[]>([]);
   const [editingDana, setEditingDana] = useState<any | null>(null);
+  const [viewingPaymentsDana, setViewingPaymentsDana] = useState<any | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
 
   useEffect(() => {
@@ -17,7 +20,7 @@ export const SuperAdminDashboard = () => {
 
   const fetchAdminDanas = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/dana/admin/all", {
+      const response = await fetch(`${API_BASE_URL}/dana/admin/all`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.ok) {
@@ -30,7 +33,7 @@ export const SuperAdminDashboard = () => {
   };
 
   const handleApprove = async (id: number, type: 'dana' | 'payment') => {
-    const url = type === 'dana' ? `http://localhost:3000/api/dana/${id}/approve` : `http://localhost:3000/api/payments/${id}/approve`;
+    const url = type === 'dana' ? `${API_BASE_URL}/dana/${id}/approve` : `${API_BASE_URL}/payments/${id}/approve`;
     try {
       const res = await fetch(url, { method: "PATCH", headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) fetchAdminDanas();
@@ -38,7 +41,7 @@ export const SuperAdminDashboard = () => {
   };
 
   const handleReject = async (id: number, type: 'dana' | 'payment') => {
-    const url = type === 'dana' ? `http://localhost:3000/api/dana/${id}/reject` : `http://localhost:3000/api/payments/${id}/reject`;
+    const url = type === 'dana' ? `${API_BASE_URL}/dana/${id}/reject` : `${API_BASE_URL}/payments/${id}/reject`;
     try {
       const res = await fetch(url, { method: "PATCH", headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) fetchAdminDanas();
@@ -48,7 +51,7 @@ export const SuperAdminDashboard = () => {
   const handleDeleteDana = async (id: number) => {
     if (!confirm("Are you sure you want to delete this Dana?")) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/dana/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/dana/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -72,11 +75,11 @@ export const SuperAdminDashboard = () => {
           <p className="text-subtle">Welcome, {user?.name}</p>
         </div>
         <div className="flex gap-4">
-          <Link to="/users" className="bg-brand-3 hover:bg-brand-4 text-white font-bold py-2 px-6 rounded-xl shadow-lg transition-all">
+          <Link to="/admin/users" className="bg-brand-3 hover:bg-brand-4 text-white font-bold py-2 px-6 rounded-xl shadow-lg transition-all">
             Users Management
           </Link>
           <Link to="/dana" className="bg-brand-1 hover:bg-brand-2 text-white font-bold py-2 px-6 rounded-xl shadow-lg transition-all">
-            + අලුතින් දානයක් වෙන් කරන්න (Add New Dana)
+            + Add New Dana
           </Link>
         </div>
       </div>
@@ -97,7 +100,7 @@ export const SuperAdminDashboard = () => {
             <div>
               <h3 className="font-bold text-xl">{dana.month} {dana.day} - {dana.name}</h3>
               <p className="text-sm font-semibold text-brand-2 bg-brand-1/10 inline-block px-2 py-0.5 rounded mt-1 mb-2">
-                {dana.mealType === 'MORNING' ? 'හීල් දානය' : dana.mealType === 'NOON' ? 'දවල් දානය' : 'ගිලන්පස'}
+                {dana.mealType === 'MORNING' ? 'Morning Meal (Heel Dana)' : dana.mealType === 'NOON' ? 'Midday Meal (Dawal Dana)' : 'Evening Refreshments'}
               </p>
               <p className="text-sm text-subtle">Status: <span className="font-semibold text-ink">{dana.status}</span></p>
               {dana.approvedBy && <p className="text-xs text-brand-1">Approved/Rejected By: {dana.approvedBy.name}</p>}
@@ -110,6 +113,7 @@ export const SuperAdminDashboard = () => {
 
             <div className="flex flex-col gap-2">
               <button onClick={() => setEditingDana(dana)} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-sm font-bold">Edit / Update</button>
+              <button onClick={() => setViewingPaymentsDana(dana)} className="bg-orange-100 text-orange-700 px-3 py-1 rounded-lg text-sm font-bold">Manage Payments</button>
               {dana.status === 'PENDING' && (
                 <div className="flex gap-2">
                   <button onClick={() => handleApprove(dana.id, 'dana')} className="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-sm font-bold w-full">Approve</button>
@@ -125,6 +129,18 @@ export const SuperAdminDashboard = () => {
 
       {editingDana && (
         <EditDanaModal dana={editingDana} token={token} onClose={() => setEditingDana(null)} onSuccess={() => { setEditingDana(null); fetchAdminDanas(); }} />
+      )}
+
+      {viewingPaymentsDana && (
+        <AdminPaymentModal
+          dana={viewingPaymentsDana}
+          token={token}
+          onClose={() => setViewingPaymentsDana(null)}
+          onRefresh={() => {
+            fetchAdminDanas();
+            setViewingPaymentsDana(null);
+          }}
+        />
       )}
     </div>
   );
