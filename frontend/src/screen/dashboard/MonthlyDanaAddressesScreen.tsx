@@ -48,6 +48,20 @@ export const MonthlyDanaAddressesScreen: React.FC = () => {
   };
 
 
+  const formatAddressLines = (addressRaw?: string) => {
+    if (!addressRaw || !addressRaw.trim()) return ["ලිපිනය ලබා දී නොමැත"];
+    const rawParts = addressRaw.split(/[\n,]/).map((p) => p.trim()).filter(Boolean);
+    if (rawParts.length === 0) return [addressRaw];
+
+    return rawParts.map((part, index) => {
+      const clean = part.replace(/[,.]+$ /g, "").replace(/[,.]+$/g, "");
+      if (index === rawParts.length - 1) {
+        return `${clean}.`;
+      }
+      return `${clean},`;
+    });
+  };
+
   return (
     <div className="bg-slate-100 min-h-screen p-4 sm:p-8 print:p-0 print:bg-white text-gray-900">
       {/* Print Page Styles */}
@@ -126,22 +140,27 @@ export const MonthlyDanaAddressesScreen: React.FC = () => {
           <div className="p-12 text-center text-gray-500">මෙම මාසය සඳහා දායකයින් කිසිවෙකු නොමැත.</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 print:grid-cols-2 print:gap-6">
-            {danas.map((dana) => (
-              <div
-                key={dana.id}
-                className="address-card border border-gray-300 rounded-lg p-6 bg-white shadow-sm print:shadow-none font-serif leading-relaxed"
-              >
-                {/* Donor Name (Bold) */}
-                <div className="text-base font-bold text-gray-900 mb-1 tracking-wide">
-                  {dana.name}{dana.name?.endsWith(",") ? "" : ","}
-                </div>
+            {danas.map((dana) => {
+              const addressLines = formatAddressLines(dana.address);
+              return (
+                <div
+                  key={dana.id}
+                  className="address-card border border-gray-300 rounded-xl p-6 sm:p-7 bg-white shadow-sm print:shadow-none leading-relaxed"
+                >
+                  {/* Donor Name (Bold Larger Font) */}
+                  <div className="text-xl sm:text-2xl font-bold text-gray-950 mb-2 tracking-wide">
+                    {dana.name?.trim()}{dana.name?.trim().endsWith(",") ? "" : ","}
+                  </div>
 
-                {/* Postal Address */}
-                <div className="text-sm font-normal text-gray-800 whitespace-pre-line leading-relaxed">
-                  {dana.address || "ලිපිනය ලබා දී නොමැත"}
+                  {/* Postal Address Lines (Larger Font) */}
+                  <div className="text-base sm:text-lg font-medium text-gray-900 space-y-1 leading-normal">
+                    {addressLines.map((line, idx) => (
+                      <div key={idx}>{line}</div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
