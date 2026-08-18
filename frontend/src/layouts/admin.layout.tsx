@@ -209,7 +209,7 @@ const AdminLayout: React.FC = () => {
                   location.pathname.startsWith("/admin/audit-logs") ? "bg-white/20 text-white font-bold" : "text-white/80 hover:bg-white/10"
                 }`}
               >
-                🔒 Audit Logs
+                Audit Logs
               </Link>
             </nav>
 
@@ -320,7 +320,7 @@ const AdminLayout: React.FC = () => {
               location.pathname.startsWith("/admin/audit-logs") ? "bg-white/20 text-white font-bold" : "text-white/70 hover:bg-white/5 hover:text-white"
             }`}
           >
-            <span>🔒 Audit Logs</span>
+            <span>Audit Logs</span>
           </Link>
         </nav>
 

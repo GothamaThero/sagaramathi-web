@@ -31,6 +31,7 @@ const DEFAULT_GEETHAYA = `ජනමන නන්දිත
 // Public: Get all settings
 export const getSettings = async (req: Request, res: Response): Promise<void> => {
   try {
+    res.setHeader("Cache-Control", "public, max-age=120, stale-while-revalidate=300");
     const settings = await prisma.siteSetting.findMany();
     const map: Record<string, string> = {
       vision: DEFAULT_VISION,

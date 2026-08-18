@@ -29,6 +29,7 @@ export const uploadGalleryMedia = multer({ storage }).single("photo");
 // GET /api/gallery - Fetch gallery items
 export const getGalleryItems = async (req: Request, res: Response): Promise<void> => {
   try {
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     const type = req.query.type as string; // PHOTO or VIDEO
     const album = req.query.album as string;
 

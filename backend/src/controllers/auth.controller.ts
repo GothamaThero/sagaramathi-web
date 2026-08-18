@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import prisma from "../config/db.js";
+import { logAuditAction } from "../services/audit.service.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_key_change_in_prod";
 
@@ -274,6 +275,16 @@ export const adminResetPassword = async (req: any, res: Response): Promise<void>
     await prisma.user.update({
       where: { id: Number(userId) },
       data: { password: hashedPassword }
+    });
+
+    await logAuditAction({
+      userId: req.user?.userId || req.user?.id,
+      userName: req.user?.name || "Admin",
+      userRole: requesterRole,
+      action: "RESET_USER_PASSWORD",
+      target: `User #${targetUser.id} (${targetUser.email})`,
+      details: `Password reset by ${requesterRole}`,
+      ipAddress: req.ip
     });
 
     res.status(200).json({ status: "success", message: "Password reset successfully by admin" });

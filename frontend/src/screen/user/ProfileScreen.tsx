@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router";
 import { useAuth } from "../../context/AuthContext";
 import { PostCard, type PostItem } from "../../component/PostCard";
@@ -47,7 +47,7 @@ export const ProfileScreen: React.FC = () => {
 
   const isOwnProfile = !id || (currentUser && parseInt(id, 10) === currentUser.id);
 
-  const fetchProfileData = async () => {
+  const fetchProfileData = useCallback(async () => {
     try {
       setLoading(true);
       if (isOwnProfile) {
@@ -97,11 +97,11 @@ export const ProfileScreen: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, token, isOwnProfile, currentUser?.id]);
 
   useEffect(() => {
     fetchProfileData();
-  }, [id, token]);
+  }, [fetchProfileData]);
 
 
   const handleUpdateProfile = async (e: React.FormEvent) => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { API_BASE_URL } from "../../libs/api";
+import { API_BASE_URL, SERVER_URL } from "../../libs/api";
 
 interface GalleryItem {
   id: number;
@@ -14,9 +14,15 @@ interface GalleryItem {
 
 const getYouTubeEmbedUrl = (url: string): string | null => {
   if (!url) return null;
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
   const match = url.match(regExp);
   return match && match[2].length === 11 ? `https://www.youtube.com/embed/${match[2]}` : null;
+};
+
+const getMediaUrl = (url: string): string => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `${SERVER_URL}${url.startsWith("/") ? "" : "/"}${url}`;
 };
 
 const GalleryScreen: React.FC = () => {
@@ -51,7 +57,7 @@ const GalleryScreen: React.FC = () => {
   const fetchGalleryItems = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_BASE_URL}/gallery?type=${activeTab}`);
+      const res = await fetch(`${API_BASE_URL}/gallery?type=${activeTab}&t=${Date.now()}`);
       if (res.ok) {
         const json = await res.json();
         setItems(json.data || []);
@@ -64,6 +70,10 @@ const GalleryScreen: React.FC = () => {
   };
 
   const openAddModal = (defaultType: "PHOTO" | "VIDEO") => {
+    if (!token || !isAdmin) {
+      alert("Only Admins and Super Admins can upload photos and videos to the gallery.");
+      return;
+    }
     setEditingItem(null);
     setItemForm({ title: "", type: defaultType, videoUrl: "", description: "", album: "GENERAL" });
     setMediaFile(null);
@@ -81,13 +91,16 @@ const GalleryScreen: React.FC = () => {
       album: item.album || "GENERAL"
     });
     setMediaFile(null);
-    setFilePreview(item.url.startsWith("/uploads/") ? `${API_BASE_URL.replace('/api', '')}${item.url}` : "");
+    setFilePreview(item.url.startsWith("/uploads/") ? getMediaUrl(item.url) : item.url);
     setIsModalOpen(true);
   };
 
   const handleSaveItem = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token) return;
+    if (!token) {
+      alert("Please log in first to upload to the gallery.");
+      return;
+    }
 
     try {
       setSubmitting(true);
@@ -270,7 +283,7 @@ const GalleryScreen: React.FC = () => {
                   onClick={() => setSelectedPhoto(item)}
                 >
                   <img
-                    src={`${API_BASE_URL.replace('/api', '')}${item.url}`}
+                    src={getMediaUrl(item.url)}
                     alt={item.title || "Gallery Photo"}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -318,7 +331,7 @@ const GalleryScreen: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {items.map((item) => {
               const embedUrl = getYouTubeEmbedUrl(item.url);
-              const videoSrc = item.url.startsWith("/") ? `${API_BASE_URL.replace('/api', '')}${item.url}` : item.url;
+              const videoSrc = getMediaUrl(item.url);
               return (
                 <div
                   key={item.id}
@@ -390,7 +403,7 @@ const GalleryScreen: React.FC = () => {
               ✕
             </button>
             <img
-              src={`${API_BASE_URL.replace('/api', '')}${selectedPhoto.url}`}
+              src={getMediaUrl(selectedPhoto.url)}
               alt={selectedPhoto.title || "Large Preview"}
               className="max-h-[75vh] w-auto object-contain"
             />
