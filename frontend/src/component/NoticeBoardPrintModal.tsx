@@ -100,8 +100,8 @@ export const NoticeBoardPrintModal: React.FC<NoticeBoardPrintModalProps> = ({
                 <h1 className="text-2xl font-black text-amber-950 tracking-wide">
                   කන්දෙගම ඓතිහාසික ධනංජය රජමහා විහාරස්ථ
                 </h1>
-                <h2 className="text-3xl font-extrabold text-amber-800">
-                  සාගරමති පිරිවෙන් සංවර්ධන සභාව - දානමය කාලසටහන
+                <h2 className="text-3xl font-extrabold text-amber-800 font-serif">
+                  Sāgaramati Pirivena Development Council - Dana Schedule
                 </h2>
                 <div className="inline-block px-6 py-1 bg-amber-100 text-amber-900 font-bold rounded-full text-sm border border-amber-300 mt-2">
                   {sheetData?.month} මාසයේ අනුමත දානමය පුණ්‍යකර්ම ලැයිස්තුව (මුළු දානයන්: {sheetData?.totalCount || 0})

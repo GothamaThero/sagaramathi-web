@@ -167,7 +167,7 @@ export const CertificateScreen = () => {
             <div className="flex items-center justify-center mb-1">
               <img
                 src="/logo.png"
-                alt="Sagaramati Pirivena Logo"
+                alt="Sāgaramati Pirivena Logo"
                 className="w-24 h-24 sm:w-28 sm:h-28 object-contain filter drop-shadow-md"
               />
             </div>

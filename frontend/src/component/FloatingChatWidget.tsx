@@ -176,14 +176,14 @@ export const FloatingChatWidget: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end print:hidden">
+    <div className="fixed bottom-14 right-4 sm:bottom-5 sm:right-6 z-50 flex flex-col items-end print:hidden max-w-[calc(100vw-2rem)]">
       {/* Expanded Chat Box */}
       {isOpen && (
-        <div className="mb-4 w-80 sm:w-96 bg-surface rounded-3xl shadow-2xl border border-brand-1/15 overflow-hidden flex flex-col h-[480px] animate-in fade-in slide-in-from-bottom-5 duration-200">
+        <div className="mb-3 w-[calc(100vw-2rem)] max-w-sm sm:w-96 bg-surface rounded-3xl shadow-2xl border border-brand-1/15 overflow-hidden flex flex-col h-[75vh] sm:h-[480px] max-h-[550px] animate-in fade-in slide-in-from-bottom-5 duration-200">
           {/* Header */}
           <div className="p-4 bg-brand-1 text-white flex items-center justify-between shadow-sm">
             <div>
-              <h4 className="font-bold text-sm leading-tight">Sagaramati Chat</h4>
+              <h4 className="font-bold text-sm leading-tight">Sāgaramati Chat</h4>
               <p className="text-[11px] text-white/80">Connect directly with temple administration</p>
             </div>
             <button

@@ -74,7 +74,7 @@ export const AnalyticsCharts = ({ token }: AnalyticsChartsProps) => {
   const COLORS = ["#10b981", "#f59e0b", "#ef4444"];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
       {/* Total Users Card */}
       <div className="bg-surface p-6 rounded-xl shadow-sm border border-brand-1/10 flex flex-col justify-center min-h-[120px]">
         <h3 className="text-sm font-semibold text-subtle mb-3">Total Users</h3>

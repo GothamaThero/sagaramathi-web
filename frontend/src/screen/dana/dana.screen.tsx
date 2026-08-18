@@ -70,7 +70,7 @@ const DanaScreen: React.FC = () => {
             Dana Sponsorship Booking
           </div>
           <h1 className="text-3xl font-extrabold text-ink tracking-tight">
-            Sagaramati Pirivena Dana Sponsorship
+            Sāgaramati Pirivena Dana Sponsorship
           </h1>
           <p className="text-subtle text-xs sm:text-sm max-w-md mx-auto">
             Select your preferred month, day, and meal type to register for temple Dana sponsorship.

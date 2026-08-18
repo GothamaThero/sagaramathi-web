@@ -197,7 +197,7 @@ export const AdminFinanceScreen: React.FC = () => {
 
 
       {/* Screen Top 3 Summary Cards (Hidden on Print) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 print:hidden">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 print:hidden">
         {/* Today's Summary */}
         <div className="bg-white p-5 rounded-2xl shadow-sm border border-brand-1/10 space-y-3">
           <p className="text-xs font-bold uppercase tracking-wider text-gray-400">TODAY'S SUMMARY</p>

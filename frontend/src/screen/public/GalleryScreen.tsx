@@ -134,7 +134,7 @@ const GalleryScreen: React.FC = () => {
       });
 
       if (res.ok) {
-        alert(editingItem ? "Gallery item updated!" : "Gallery item added successfully!");
+        alert(editingItem ? "Gallery item updated successfully!" : "Gallery item added successfully!");
         setIsModalOpen(false);
         fetchGalleryItems();
       } else {
@@ -158,7 +158,7 @@ const GalleryScreen: React.FC = () => {
       });
 
       if (res.ok) {
-        alert("Gallery item deleted");
+        alert("Gallery item deleted successfully");
         fetchGalleryItems();
       }
     } catch (e) {
@@ -196,13 +196,13 @@ const GalleryScreen: React.FC = () => {
         {/* Page Header */}
         <div className="bg-white border-2 border-amber-500/30 rounded-3xl p-8 shadow-xl text-center space-y-4 relative overflow-hidden">
           <span className="text-xs font-bold text-brand-1 uppercase tracking-widest bg-brand-1/10 px-4 py-1 rounded-full">
-            ඡායාරූප සහ වීඩියෝ එකතුව
+            Photos &amp; Videos Collection
           </span>
           <h1 className="text-3xl sm:text-4xl font-black text-brand-1 tracking-tight">
-            සාගරමති ගැලරිය (Gallery)
+            Sāgaramati Gallery
           </h1>
           <p className="text-xs sm:text-sm text-gray-600 font-medium max-w-2xl mx-auto">
-            සාගරමති පිරිවෙනේ සහ ධනංජය රජමහා විහාරයේ පැවැත්වුණු පින්කම්, උත්සව සහ විශේෂ අවස්ථාවන්හි ඡායාරූප සහ වීඩියෝ එකතුව.
+            Collection of photographs and videos of religious ceremonies, events, and special occasions of Sāgaramati Pirivena &amp; Dhananjaya Rajamaha Viharaya.
           </p>
 
           {/* Tabs & Add Button Row */}
@@ -217,7 +217,7 @@ const GalleryScreen: React.FC = () => {
                     : "text-amber-950 hover:text-brand-1"
                 }`}
               >
-                📸 ඡායාරූප (Photos)
+                📸 Photos
               </button>
               <button
                 onClick={() => setActiveTab("VIDEO")}
@@ -227,7 +227,7 @@ const GalleryScreen: React.FC = () => {
                     : "text-amber-950 hover:text-brand-1"
                 }`}
               >
-                🎥 වීඩියෝ (Videos)
+                🎥 Videos
               </button>
             </div>
 
@@ -246,14 +246,14 @@ const GalleryScreen: React.FC = () => {
         {/* Content Display Grid */}
         {loading ? (
           <div className="bg-white p-12 rounded-3xl text-center text-gray-500 font-semibold text-sm shadow-sm border border-gray-200">
-            ලෝඩ් වෙමින් පවතී... (Loading Gallery...)
+            Loading gallery items...
           </div>
         ) : items.length === 0 ? (
           <div className="bg-white p-12 rounded-3xl text-center text-gray-500 font-semibold text-sm shadow-sm border border-gray-200 space-y-2">
-            <h3 className="font-bold text-ink text-base">තවම {activeTab === "PHOTO" ? "ඡායාරූප" : "වීඩියෝ"} එකතු කර නොමැත</h3>
+            <h3 className="font-bold text-ink text-base">No {activeTab === "PHOTO" ? "photos" : "videos"} added yet</h3>
             {isAdmin && (
               <p className="text-xs text-subtle">
-                ඉහත "+ Add" බොත්තම භාවිතයෙන් ප්‍රථම {activeTab === "PHOTO" ? "ඡායාරූපය" : "වීඩියෝව"} එකතු කරන්න!
+                Click the "+ Add" button above to upload the first {activeTab === "PHOTO" ? "photo" : "video"}.
               </p>
             )}
           </div>
@@ -417,10 +417,10 @@ const GalleryScreen: React.FC = () => {
 
             <form onSubmit={handleSaveItem} className="space-y-3 text-xs font-bold">
               <div>
-                <label className="block text-gray-700 mb-1">Title (මාතෘකාව)</label>
+                <label className="block text-gray-700 mb-1">Title</label>
                 <input
                   type="text"
-                  placeholder="e.g. පිරිවෙන් වාර්ෂික පින්කම"
+                  placeholder="e.g. Annual Pirivena Ceremony"
                   value={itemForm.title}
                   onChange={(e) => setItemForm({ ...itemForm, title: e.target.value })}
                   className="w-full p-2.5 border rounded-xl font-medium outline-none focus:border-brand-1"
@@ -434,14 +434,14 @@ const GalleryScreen: React.FC = () => {
                   onChange={(e) => setItemForm({ ...itemForm, type: e.target.value as "PHOTO" | "VIDEO" })}
                   className="w-full p-2.5 border rounded-xl font-medium outline-none focus:border-brand-1"
                 >
-                  <option value="PHOTO">Photo (ඡායාරූපය)</option>
-                  <option value="VIDEO">Video (වීඩියෝ)</option>
+                  <option value="PHOTO">Photo</option>
+                  <option value="VIDEO">Video</option>
                 </select>
               </div>
 
               {itemForm.type === "PHOTO" ? (
                 <div>
-                  <label className="block text-gray-700 mb-1">Upload Photo (ඡායාරූපය)</label>
+                  <label className="block text-gray-700 mb-1">Upload Photo File</label>
                   <input
                     type="file"
                     accept="image/*"
@@ -465,7 +465,7 @@ const GalleryScreen: React.FC = () => {
                 <div className="space-y-3 p-3.5 bg-amber-50/60 rounded-2xl border border-amber-200">
                   <div>
                     <label className="block text-gray-700 mb-1">
-                      Upload Video File (වීඩියෝ ෆයිල් එකක් Upload කරන්න)
+                      Upload Video File
                     </label>
                     <input
                       type="file"
@@ -487,16 +487,16 @@ const GalleryScreen: React.FC = () => {
                   </div>
 
                   <div className="text-center text-[10px] font-black text-amber-900 uppercase tracking-widest">
-                    — හෝ (OR) —
+                    — OR —
                   </div>
 
                   <div>
                     <label className="block text-gray-700 mb-1">
-                      YouTube / Video Link (YouTube හෝ වීඩියෝ ලින්ක් එක)
+                      YouTube / Video Link
                     </label>
                     <input
                       type="text"
-                      placeholder="https://www.youtube.com/watch?v=... හෝ වීඩියෝ ලින්ක් එක"
+                      placeholder="https://www.youtube.com/watch?v=... or direct video link"
                       value={itemForm.videoUrl}
                       onChange={(e) => setItemForm({ ...itemForm, videoUrl: e.target.value })}
                       className="w-full p-2.5 border rounded-xl font-medium outline-none focus:border-brand-1 bg-white"
@@ -506,7 +506,7 @@ const GalleryScreen: React.FC = () => {
               )}
 
               <div>
-                <label className="block text-gray-700 mb-1">Description (විස්තරය)</label>
+                <label className="block text-gray-700 mb-1">Description</label>
                 <textarea
                   rows={3}
                   value={itemForm.description}

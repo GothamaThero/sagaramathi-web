@@ -62,7 +62,7 @@ export const AdminAuditLogsScreen: React.FC = () => {
       </div>
 
       {/* Filter Options */}
-      <div className="flex gap-2">
+      <div className="flex flex-wrap sm:flex-nowrap gap-2 overflow-x-auto pb-1">
         <button
           onClick={() => setFilterAction("ALL")}
           className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${

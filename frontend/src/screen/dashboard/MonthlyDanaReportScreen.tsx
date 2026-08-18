@@ -116,14 +116,14 @@ export const MonthlyDanaReportScreen: React.FC = () => {
             <BuddhistFlagSVG />
             <img
               src="/logo.png"
-              alt="Sagaramati Pirivena Logo"
+              alt="Sāgaramati Pirivena Logo"
               className="w-32 h-32 sm:w-40 sm:h-40 object-contain"
             />
             <BuddhistFlagSVG />
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-black text-brand-1 mb-2">
-            Sagaramati Pirivena Development Council
+            Sāgaramati Pirivena Development Council
           </h1>
           <p className="text-xs font-semibold text-gray-700 mt-1">
             Dhananjaya Rajamaha Viharaya, Kandegama, Polonnaruwa

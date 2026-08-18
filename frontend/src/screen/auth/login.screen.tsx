@@ -60,13 +60,13 @@ const LoginScreen: React.FC = () => {
         <div className="relative z-10 text-center space-y-6 max-w-md">
           <div className="space-y-3">
             <span className="text-[11px] font-bold text-amber-200 uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full border border-white/15">
-              ඓතිහාසික පින්බිම &amp; පිරිවෙන
+              Historic Monastery &amp; Pirivena
             </span>
             <h2 className="text-2xl sm:text-3xl font-black text-white leading-tight font-serif pt-2">
-              සාගරමති පිරිවෙන සහ ධනංජය රජමහා විහාරය
+              Sāgaramati Pirivena &amp; Dhananjaya Rajamaha Viharaya
             </h2>
             <p className="text-white/80 text-xs sm:text-sm leading-relaxed max-w-xs mx-auto">
-              කන්දෙගම, අරලගංවිල, පොළොන්නරුව.
+              Kandegama, Aralaganwila, Polonnaruwa.
             </p>
           </div>
         </div>
@@ -79,19 +79,19 @@ const LoginScreen: React.FC = () => {
           {/* Logo (mobile only) */}
           <div className="lg:hidden text-center mb-8">
             <img src="/logo.png" alt="Sagaramati Emblem" className="w-16 h-16 object-contain mx-auto mb-3 filter drop-shadow-md" />
-            <h2 className="text-lg font-black text-brand-1">සාගරමති පිරිවෙන</h2>
+            <h2 className="text-lg font-black text-brand-1">Sāgaramati Pirivena</h2>
           </div>
 
           <div className="mb-6">
-            <h1 className="text-3xl font-black text-brand-1 font-serif">ඇතුළු වන්න (Sign In)</h1>
-            <p className="text-subtle text-xs sm:text-sm font-semibold mt-1">සාගරමති පිරිවෙන් පද්ධතියට ප්‍රවේශ වන්න</p>
+            <h1 className="text-3xl font-black text-brand-1 font-serif">Sign In</h1>
+            <p className="text-subtle text-xs sm:text-sm font-semibold mt-1">Access your account</p>
           </div>
 
           <div className="bg-white rounded-3xl p-8 shadow-xl border border-brand-1/10 space-y-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                  විද්‍යුත් තැපෑල (Email Address) *
+                  Email Address *
                 </label>
                 <input
                   type="email"
@@ -105,7 +105,7 @@ const LoginScreen: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                  මුරපදය (Password) *
+                  Password *
                 </label>
                 <input
                   type="password"
@@ -122,15 +122,15 @@ const LoginScreen: React.FC = () => {
                 disabled={loading}
                 className="w-full py-3.5 bg-brand-1 hover:bg-emerald-800 text-white font-bold text-sm rounded-xl shadow-lg shadow-brand-1/25 disabled:opacity-50 transition-colors mt-2"
               >
-                {loading ? "ඇතුළු වෙමින් පවතී..." : "ඇතුළු වන්න (Sign In)"}
+                {loading ? "Signing in..." : "Sign In"}
               </button>
             </form>
 
             <div className="pt-4 text-center border-t border-gray-100">
               <p className="text-xs text-subtle font-medium">
-                නව ගිණුමක් නොමැතිද?{" "}
+                Don't have an account?{" "}
                 <Link to="/register" className="font-bold text-brand-1 hover:underline">
-                  මෙතැනින් ලියාපදිංචි වන්න (Register here)
+                  Register here
                 </Link>
               </p>
             </div>

@@ -113,13 +113,13 @@ const HomeScreen: React.FC = () => {
         {/* 2. Newsfeed Posts List */}
         {loading ? (
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 text-center text-gray-500 font-semibold text-sm">
-            පෝස්ට් පෝලිම ලෝඩ් වෙමින් පවතී... (Loading Feed...)
+            Loading Newsfeed posts...
           </div>
         ) : posts.length === 0 ? (
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 text-center space-y-2">
-            <h3 className="font-bold text-ink text-sm">තවම පෝස්ට් පළ කර නොමැත</h3>
+            <h3 className="font-bold text-ink text-sm">No posts published yet</h3>
             <p className="text-xs text-subtle max-w-md mx-auto">
-              ඉහත "What's on your mind?" කොටස භාවිතයෙන් පළමු පෝස්ට් එක ඡායාරූප හෝ වීඩියෝ සමඟ පළ කරන්න!
+              Use the "What's on your mind?" box above to create the first post with photos or videos!
             </p>
           </div>
         ) : (
@@ -139,15 +139,15 @@ const HomeScreen: React.FC = () => {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                තවත් පෝස්ට් ලෝඩ් වෙමින් පවතී...
+                Loading more posts...
               </div>
             ) : hasMore ? (
               <div className="text-xs text-gray-400 font-medium">
-                පහළට Scroll කරන්න... (Scroll down for more)
+                Scroll down for more posts...
               </div>
             ) : (
               <div className="text-xs font-semibold text-gray-400 bg-gray-50 py-2.5 px-5 rounded-full inline-block border border-gray-200/60">
-                සියලුම පෝස්ට් නැරඹූහ ✓ (You've reached the end of the feed)
+                You've reached the end of the feed ✓
               </div>
             )}
           </div>

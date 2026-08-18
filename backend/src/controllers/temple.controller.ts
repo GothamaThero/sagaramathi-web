@@ -28,16 +28,16 @@ export const uploadMonkPhoto = multer({ storage }).single("photo");
 export const uploadBranchPhoto = multer({ storage }).single("photo");
 
 const DEFAULT_TEMPLE_INFO = {
-  name: "සාගරමති පිරිවෙන සහ ධනංජය රජමහා විහාරය",
-  address: "කන්දෙගම, අරලගංවිල, පොළොන්නරුව",
+  name: "Sāgaramati Pirivena & Dhananjaya Rajamaha Viharaya",
+  address: "Kandegama, Aralaganwila, Polonnaruwa",
   phone1: "027-3272215",
   phone2: "076-3272215",
   whatsapp: "076-3272215",
   email: "psagaramathi@yahoo.com",
-  history: `කන්දෙගම ඓතිහාසික ධනංජය රජමහා විහාරය අනුරාධපුර සහ පොළොන්නරූ යුගයන්ට නෑකම් කියන ශ්‍රේෂ්ඨ පින්බිමකි. ශ්‍රී සම්බුද්ධ ශාසනයේ චිරස්ථිතිය උදෙසාත්, පූජනීය මහා සංඝරත්නයට හා සාමණේර හිමිවරුන්ට උසස් ත්‍රිපිටක ධර්ම අධ්‍යාපනය ලබාදීමටත් සාගරමති පිරිවෙන ස්ථාපිත කර ඇත.`,
-  bank_name: "මහජන බැංකුව (People's Bank) - අරලගංවිල ශාඛාව",
+  history: `Historical Dhananjaya Rajamaha Viharaya in Kandegama is a sacred sanctuary tracing back to Anuradhapura and Polonnaruwa eras. Sāgaramati Pirivena was established to preserve the Buddha Sasana and provide higher Dhamma education for the Venerable Sangha.`,
+  bank_name: "People's Bank - Aralaganwila Branch",
   bank_acc_number: "253200150044402",
-  bank_acc_name: "සාගරමති පිරිවෙන් සංවර්ධන සභාව",
+  bank_acc_name: "Sāgaramati Piriven Development Society",
   map_link: "https://maps.google.com/?q=Sagaramati+Pirivena+Kandegama"
 };
 

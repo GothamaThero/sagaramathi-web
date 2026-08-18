@@ -128,7 +128,7 @@ const AboutScreen: React.FC = () => {
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto rounded-full" />
 
           <p className="text-gray-700 text-base sm:text-lg max-w-3xl mx-auto leading-relaxed font-semibold text-justify">
-            Sagaramati Monastery & Pirivena is a premier Buddhist educational and monastic institute dedicated to empowering the Venerable Sangha with profound Dhamma education, monastic discipline, and modern technological expertise.
+            Sāgaramati Monastery &amp; Pirivena is a premier Buddhist educational and monastic institute dedicated to empowering the Venerable Sangha with profound Dhamma education, monastic discipline, and modern technological expertise.
           </p>
         </div>
 
@@ -251,7 +251,7 @@ const AboutScreen: React.FC = () => {
         <div className="bg-gradient-to-b from-amber-50/70 via-white to-amber-50/50 border-2 border-amber-500/40 rounded-3xl p-8 sm:p-10 shadow-xl relative overflow-hidden text-center space-y-6">
           <div className="flex items-center justify-between border-b border-amber-200/80 pb-4">
             <div className="w-10 h-10" />
-            <h2 className="text-2xl sm:text-3xl font-black text-brand-1 tracking-wide">
+            <h2 className="text-2xl sm:text-3xl font-black text-brand-1 tracking-wide font-serif">
               සාගරමති පිරිවෙන් ගීතය
             </h2>
             {isSuperAdmin && !editingGeethaya ? (
@@ -275,7 +275,7 @@ const AboutScreen: React.FC = () => {
                 rows={12}
                 value={tempGeethaya}
                 onChange={(e) => setTempGeethaya(e.target.value)}
-                className="w-full p-4 border border-amber-400 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-amber-500 outline-none leading-relaxed text-center"
+                className="w-full p-4 border border-amber-400 rounded-xl text-base font-semibold focus:ring-2 focus:ring-amber-500 outline-none leading-relaxed text-center"
                 placeholder="Write Piriven Geethaya lyrics..."
               />
               <div className="flex gap-2 justify-center">
@@ -295,8 +295,8 @@ const AboutScreen: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="max-w-2xl mx-auto space-y-6 text-gray-800">
-              <p className="whitespace-pre-line text-base sm:text-lg font-bold leading-loose tracking-wide text-brand-1 font-serif">
+            <div className="max-w-3xl mx-auto space-y-6 text-gray-800 py-2">
+              <p className="whitespace-pre-line text-xl sm:text-2xl md:text-3xl font-black leading-loose tracking-wide text-brand-1 font-serif">
                 {geethaya}
               </p>
             </div>
@@ -305,7 +305,7 @@ const AboutScreen: React.FC = () => {
 
         {/* Footer Credit Line */}
         <div className="text-center pt-4 border-t border-gray-200/60 text-xs text-subtle font-medium">
-          Designed &amp; Developed by <strong className="text-brand-1">Gothamavansalankara Thero</strong> | EXONIT (Pvt) Ltd.
+          Designed &amp; Developed by <strong className="text-brand-1 whitespace-nowrap">Gothamavansalankara Thero</strong> | <span className="whitespace-nowrap">EXONIT (Pvt) Ltd.</span>
         </div>
       </div>
     </div>

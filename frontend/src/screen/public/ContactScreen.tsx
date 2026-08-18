@@ -20,15 +20,15 @@ const ContactScreen: React.FC = () => {
   const isAdmin = user?.role === "SUPER_ADMIN" || user?.role === "ADMIN";
 
   const [templeInfo, setTempleInfo] = useState<ContactInfo>({
-    name: "සාගරමති පිරිවෙන සහ ධනංජය රජමහා විහාරය",
-    address: "කන්දෙගම, අරලගංවිල, පොළොන්නරුව",
+    name: "Sāgaramati Pirivena & Dhananjaya Rajamaha Viharaya",
+    address: "Kandegama, Aralaganwila, Polonnaruwa",
     phone1: "027-3272215",
     phone2: "076-3272215",
     whatsapp: "076-3272215",
     email: "psagaramathi@yahoo.com",
-    bank_name: "මහජන බැංකුව (People's Bank) - අරලගංවිල ශාඛාව",
+    bank_name: "People's Bank - Aralaganwila Branch",
     bank_acc_number: "253200150044402",
-    bank_acc_name: "සාගරමති පිරිවෙන් සංවර්ධන සභාව",
+    bank_acc_name: "Sāgaramati Piriven Development Society",
     map_link: "https://maps.google.com/?q=Sagaramati+Pirivena+Kandegama"
   });
 
@@ -120,13 +120,13 @@ const ContactScreen: React.FC = () => {
         {/* Page Header */}
         <div className="bg-white border-2 border-amber-500/30 rounded-3xl p-8 sm:p-10 shadow-lg text-center space-y-3 relative overflow-hidden">
           <span className="text-xs font-bold text-amber-800 uppercase tracking-widest bg-amber-100 px-4 py-1 rounded-full">
-            සම්බන්ධ කරගැනීම
+            Contact Us
           </span>
           <h1 className="text-3xl sm:text-4xl font-black text-brand-1 tracking-tight">
-            Contact Us
+            Contact Information
           </h1>
           <p className="text-xs sm:text-sm text-gray-600 font-medium max-w-xl mx-auto">
-            සාගරමති පිරිවෙන සහ ධනංජය රජමහා විහාරය පිළිබඳ ඕනෑම තොරතුරක් දැනගැනීමට පහත දුරකථන අංක හෝ පණිවිඩ යැවීමේ පහසුකම් භාවිතා කරන්න.
+            Get in touch with Sāgaramati Pirivena &amp; Dhananjaya Rajamaha Viharaya using the phone numbers or inquiry form below.
           </p>
 
           {/* Admin Edit Button */}
@@ -153,7 +153,7 @@ const ContactScreen: React.FC = () => {
               📍
             </div>
             <div>
-              <h3 className="font-bold text-ink text-base">ලිපිනය (Address)</h3>
+              <h3 className="font-bold text-ink text-base">Address</h3>
               <p className="text-gray-600 font-medium leading-relaxed mt-1">{templeInfo.address}</p>
             </div>
           </div>
@@ -164,7 +164,7 @@ const ContactScreen: React.FC = () => {
               📞
             </div>
             <div>
-              <h3 className="font-bold text-ink text-base">දුරකථන (Phone)</h3>
+              <h3 className="font-bold text-ink text-base">Phone Numbers</h3>
               <p className="text-gray-600 font-medium leading-relaxed mt-1">
                 {templeInfo.phone1} <br />
                 {templeInfo.phone2}
@@ -197,7 +197,7 @@ const ContactScreen: React.FC = () => {
               ✉️
             </div>
             <div>
-              <h3 className="font-bold text-ink text-base">විද්‍යුත් තැපෑල (Email)</h3>
+              <h3 className="font-bold text-ink text-base">Email Address</h3>
               <p className="text-gray-600 font-medium break-all mt-1">{templeInfo.email}</p>
             </div>
           </div>
@@ -210,22 +210,22 @@ const ContactScreen: React.FC = () => {
               🏦
             </div>
             <div>
-              <h3 className="text-xl font-black text-brand-1">විහාරස්ථ බැංකු ගිණුම් විස්තර (Bank Account Details)</h3>
-              <p className="text-xs text-subtle font-medium">දානමය පින්කම් සහ විහාරස්ථ සංවර්ධන කටයුතු සඳහා ආධාර තැන්පත් කිරීම</p>
+              <h3 className="text-xl font-black text-brand-1">Bank Account Details (For Sponsorships &amp; Donations)</h3>
+              <p className="text-xs text-subtle font-medium">Bank transfer details for Dana offerings &amp; monastery development funds</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 text-xs font-bold">
             <div className="bg-white p-4 rounded-2xl border border-amber-200 shadow-sm space-y-1">
-              <span className="text-amber-800 text-[10px] uppercase font-bold">බැංකුව සහ ශාඛාව (Bank &amp; Branch)</span>
+              <span className="text-amber-800 text-[10px] uppercase font-bold">Bank &amp; Branch</span>
               <p className="text-ink text-sm">{templeInfo.bank_name}</p>
             </div>
             <div className="bg-white p-4 rounded-2xl border border-emerald-200 shadow-sm space-y-1">
-              <span className="text-emerald-800 text-[10px] uppercase font-bold">ගිණුම් අංකය (Account Number)</span>
+              <span className="text-emerald-800 text-[10px] uppercase font-bold">Account Number</span>
               <p className="text-brand-1 text-base font-black tracking-wider">{templeInfo.bank_acc_number}</p>
             </div>
             <div className="bg-white p-4 rounded-2xl border border-amber-200 shadow-sm space-y-1">
-              <span className="text-amber-800 text-[10px] uppercase font-bold">ගිණුමේ නම (Account Name)</span>
+              <span className="text-amber-800 text-[10px] uppercase font-bold">Account Name</span>
               <p className="text-ink text-sm">{templeInfo.bank_acc_name}</p>
             </div>
           </div>
@@ -236,14 +236,14 @@ const ContactScreen: React.FC = () => {
           {/* Send Message Form */}
           <div className="bg-white p-8 rounded-3xl border-2 border-brand-1/20 shadow-xl space-y-5">
             <div>
-              <h2 className="text-2xl font-black text-brand-1">පණිවිඩයක් යවන්න (Send a Message)</h2>
-              <p className="text-xs text-subtle">අප වෙත පණිවිඩයක් යැවීමට පහත පෝරමය පුරවා යවන්න.</p>
+              <h2 className="text-2xl font-black text-brand-1">Send a Message</h2>
+              <p className="text-xs text-subtle">Fill in the form below to send an inquiry or message.</p>
             </div>
 
             {submitted ? (
               <div className="bg-emerald-50 text-emerald-800 p-6 rounded-2xl border border-emerald-200 text-center space-y-2">
-                <h4 className="font-bold text-base">ඔබගේ පණිවිඩය සාර්ථකව ලැබිණි! ✓</h4>
-                <p className="text-xs">අප කඩිනමින් ඔබ හා සම්බන්ධ වන්නෙමු. ස්තූතියි.</p>
+                <h4 className="font-bold text-base">Message Sent Successfully! ✓</h4>
+                <p className="text-xs">We will get back to you shortly. Thank you.</p>
                 <button
                   onClick={() => {
                     setSubmitted(false);
@@ -251,26 +251,26 @@ const ContactScreen: React.FC = () => {
                   }}
                   className="mt-2 px-4 py-1.5 bg-emerald-600 text-white font-bold text-xs rounded-xl"
                 >
-                  තවත් පණිවිඩයක් යවන්න
+                  Send Another Message
                 </button>
               </div>
             ) : (
               <form onSubmit={handleMessageSubmit} className="space-y-4 text-xs font-bold">
                 <div>
-                  <label className="block text-gray-700 mb-1">ඔබගේ නම (Full Name) *</label>
+                  <label className="block text-gray-700 mb-1">Full Name *</label>
                   <input
                     type="text"
                     required
                     value={messageForm.name}
                     onChange={(e) => setMessageForm({ ...messageForm, name: e.target.value })}
                     className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-brand-1"
-                    placeholder="e.g. සුනිල් පෙරේරා"
+                    placeholder="e.g. Sunil Perera"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-gray-700 mb-1">දුරකථන අංකය (Phone) *</label>
+                    <label className="block text-gray-700 mb-1">Phone Number *</label>
                     <input
                       type="text"
                       required
@@ -282,7 +282,7 @@ const ContactScreen: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-gray-700 mb-1">විද්‍යුත් තැපෑල (Email)</label>
+                    <label className="block text-gray-700 mb-1">Email Address</label>
                     <input
                       type="email"
                       value={messageForm.email}
@@ -294,14 +294,14 @@ const ContactScreen: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 mb-1">පණිවිඩය (Message) *</label>
+                  <label className="block text-gray-700 mb-1">Message *</label>
                   <textarea
                     rows={4}
                     required
                     value={messageForm.message}
                     onChange={(e) => setMessageForm({ ...messageForm, message: e.target.value })}
                     className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-brand-1 resize-none"
-                    placeholder="ඔබගේ පණිවිඩය මෙහි සටහන් කරන්න..."
+                    placeholder="Type your message here..."
                   />
                 </div>
 
@@ -309,7 +309,7 @@ const ContactScreen: React.FC = () => {
                   type="submit"
                   className="w-full py-3 bg-brand-1 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-md transition-colors"
                 >
-                  පණිවිඩය යවන්න (Send Message)
+                  Send Message
                 </button>
               </form>
             )}
@@ -318,7 +318,7 @@ const ContactScreen: React.FC = () => {
           {/* Location Map & Directions */}
           <div className="bg-white p-8 rounded-3xl border-2 border-brand-1/20 shadow-xl space-y-5 flex flex-col justify-between">
             <div className="space-y-2">
-              <h2 className="text-2xl font-black text-brand-1">ස්ථානය (Location &amp; Map)</h2>
+              <h2 className="text-2xl font-black text-brand-1">Location &amp; Directions</h2>
               <p className="text-xs text-subtle">
                 {templeInfo.address}
               </p>
@@ -328,9 +328,9 @@ const ContactScreen: React.FC = () => {
               <div className="w-16 h-16 rounded-full bg-amber-500/20 text-amber-900 font-black text-3xl flex items-center justify-center mx-auto">
                 🗺️
               </div>
-              <h4 className="font-bold text-ink text-base">Google Maps මගින් පැමිණීමට</h4>
+              <h4 className="font-bold text-ink text-base">Google Maps Navigation</h4>
               <p className="text-xs text-gray-600">
-                පොළොන්නරුව අරලගංවිල හරහා කන්දෙගම ඓතිහාසික ධනංජය රජමහා විහාරයට පැමිණිය හැක.
+                Located via Polonnaruwa - Aralaganwila at Kandegama Dhananjaya Rajamaha Viharaya.
               </p>
               <a
                 href={templeInfo.map_link}
@@ -358,9 +358,9 @@ const ContactScreen: React.FC = () => {
             <form onSubmit={handleSaveContactInfo} className="space-y-4 text-xs font-bold">
               {/* Contact Details Section */}
               <div className="space-y-2 border-b border-gray-100 pb-3">
-                <h4 className="font-black text-amber-900 text-xs uppercase">1. සන්නිවේදන තොරතුරු (Contact Details)</h4>
+                <h4 className="font-black text-amber-900 text-xs uppercase">1. Contact Information</h4>
                 <div>
-                  <label className="block text-gray-700 mb-1">ලිපිනය (Address)</label>
+                  <label className="block text-gray-700 mb-1">Address</label>
                   <input
                     type="text"
                     value={editForm.address}
@@ -414,21 +414,21 @@ const ContactScreen: React.FC = () => {
 
               {/* Bank Details Section */}
               <div className="space-y-2 border-b border-gray-100 pb-3">
-                <h4 className="font-black text-amber-900 text-xs uppercase">2. බැංකු ගිණුම් තොරතුරු (Bank Account Details)</h4>
+                <h4 className="font-black text-amber-900 text-xs uppercase">2. Bank Account Details</h4>
                 <div>
-                  <label className="block text-gray-700 mb-1">බැංකුව සහ ශාඛාව (Bank &amp; Branch)</label>
+                  <label className="block text-gray-700 mb-1">Bank &amp; Branch</label>
                   <input
                     type="text"
                     value={editForm.bank_name}
                     onChange={(e) => setEditForm({ ...editForm, bank_name: e.target.value })}
                     className="w-full p-2.5 border rounded-xl font-medium outline-none focus:border-brand-1"
-                    placeholder="e.g. මහජන බැංකුව (People's Bank) - අරලගංවිල ශාඛාව"
+                    placeholder="e.g. People's Bank - Aralaganwila Branch"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-gray-700 mb-1">ගිණුම් අංකය (Account Number)</label>
+                    <label className="block text-gray-700 mb-1">Account Number</label>
                     <input
                       type="text"
                       value={editForm.bank_acc_number}
@@ -438,13 +438,13 @@ const ContactScreen: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 mb-1">ගිණුමේ නම (Account Name)</label>
+                    <label className="block text-gray-700 mb-1">Account Name</label>
                     <input
                       type="text"
                       value={editForm.bank_acc_name}
                       onChange={(e) => setEditForm({ ...editForm, bank_acc_name: e.target.value })}
                       className="w-full p-2.5 border rounded-xl font-medium outline-none focus:border-brand-1"
-                      placeholder="සාගරමති පිරිවෙන් සංවර්ධන සභාව"
+                      placeholder="Sagaramathi Piriven Development Society"
                     />
                   </div>
                 </div>
@@ -452,7 +452,7 @@ const ContactScreen: React.FC = () => {
 
               {/* Google Maps Section */}
               <div className="space-y-2">
-                <h4 className="font-black text-amber-900 text-xs uppercase">3. Google Maps ලින්ක් එක (Google Maps Link)</h4>
+                <h4 className="font-black text-amber-900 text-xs uppercase">3. Google Maps Link</h4>
                 <div>
                   <label className="block text-gray-700 mb-1">Google Maps URL</label>
                   <input

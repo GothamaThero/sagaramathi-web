@@ -164,7 +164,7 @@ const TempleScreen: React.FC = () => {
       });
 
       if (res.ok) {
-        alert(editingBranch ? "Temple details updated!" : "New temple added successfully!");
+        alert(editingBranch ? "Temple details updated successfully!" : "New temple added successfully!");
         setIsBranchModalOpen(false);
         fetchTempleData();
       } else {
@@ -188,7 +188,7 @@ const TempleScreen: React.FC = () => {
       });
 
       if (res.ok) {
-        alert("Temple removed");
+        alert("Temple removed successfully");
         fetchTempleData();
       }
     } catch (e) {
@@ -202,7 +202,7 @@ const TempleScreen: React.FC = () => {
     setMonkForm({
       name: "",
       designation: "",
-      templeName: branches.length > 0 ? branches[0].name : "සාගරමති පිරිවෙන සහ ධනංජය රජමහා විහාරය",
+      templeName: branches.length > 0 ? branches[0].name : "Sāgaramati Pirivena & Dhananjaya Rajamaha Viharaya",
       phone: "",
       bio: "",
       category: "RESIDENT",
@@ -264,7 +264,7 @@ const TempleScreen: React.FC = () => {
       });
 
       if (res.ok) {
-        alert(editingMonk ? "Monk details updated!" : "Resident monk added!");
+        alert(editingMonk ? "Monk details updated successfully!" : "Resident monk added successfully!");
         setIsMonkModalOpen(false);
         fetchTempleData();
       } else {
@@ -288,7 +288,7 @@ const TempleScreen: React.FC = () => {
       });
 
       if (res.ok) {
-        alert("Monk entry removed");
+        alert("Monk entry removed successfully");
         fetchTempleData();
       }
     } catch (e) {
@@ -303,18 +303,18 @@ const TempleScreen: React.FC = () => {
         {/* Page Top Title Card */}
         <div className="bg-white border-2 border-amber-500/30 rounded-3xl p-8 shadow-xl text-center space-y-4 relative overflow-hidden">
           <div className="flex justify-center">
-            <img src="/logo.png" alt="Sagaramati Temple Emblem" className="w-20 h-20 object-contain filter drop-shadow-md" />
+            <img src="/logo.png" alt="Sāgaramati Temple Emblem" className="w-20 h-20 object-contain filter drop-shadow-md" />
           </div>
           <div>
             <span className="text-xs font-bold text-amber-800 uppercase tracking-widest bg-amber-100 px-4 py-1 rounded-full">
-              අපගේ විහාරස්ථාන පද්ධතිය
+              Monasteries &amp; Temples Network
             </span>
             <h1 className="text-3xl sm:text-4xl font-black text-brand-1 mt-2">
               Our Temples Network
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-gray-600 font-medium max-w-2xl mx-auto">
-            සාගරමති පිරිවෙණට අනුබද්ධ විහාරස්ථාන පද්ධතිය සහ වැඩ සිටින පූජනීය මහා සංඝරත්නයේ තොරතුරු.
+            Information about historical temples and resident clergy of Sāgaramati Pirivena.
           </p>
 
           {/* Admin Add Temple Button */}
@@ -324,7 +324,7 @@ const TempleScreen: React.FC = () => {
                 onClick={openAddBranchModal}
                 className="px-6 py-2.5 bg-brand-1 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-2"
               >
-                + Add New Temple (අලුත් විහාරස්ථානයක් ඇතුළත් කරන්න)
+                + Add New Temple (Admin)
               </button>
             </div>
           )}
@@ -334,7 +334,7 @@ const TempleScreen: React.FC = () => {
         <div className="space-y-6">
           <div className="border-b-2 border-amber-300/60 pb-3 flex items-center justify-between">
             <h2 className="text-2xl sm:text-3xl font-black text-brand-1">
-              අපගේ විහාරස්ථාන (Our Temples)
+              Our Temples
             </h2>
             <span className="text-xs font-bold text-amber-900 bg-amber-100 px-3 py-1 rounded-full">
               {branches.length} Temples
@@ -343,11 +343,11 @@ const TempleScreen: React.FC = () => {
 
           {loading ? (
             <div className="bg-white p-8 rounded-3xl text-center text-gray-500 font-semibold text-sm">
-              විහාරස්ථාන තොරතුරු ලෝඩ් වෙමින් පවතී...
+              Loading temple information...
             </div>
           ) : branches.length === 0 ? (
             <div className="bg-white p-8 rounded-3xl text-center text-gray-500 font-semibold text-sm border border-gray-200">
-              තවම විහාරස්ථාන ඇතුළත් කර නොමැත.
+              No temple details added yet.
             </div>
           ) : (
             <div className="space-y-8">
@@ -366,7 +366,7 @@ const TempleScreen: React.FC = () => {
                             : "bg-emerald-700 text-white shadow-sm"
                         }`}
                       >
-                        {branch.category === "MAIN" ? "ප්‍රධාන විහාරස්ථානය (Main Temple)" : "ශාඛා විහාරස්ථානය (Branch Temple)"}
+                        {branch.category === "MAIN" ? "Main Temple" : "Branch Temple"}
                       </span>
                       <h2 className="text-2xl sm:text-3xl font-black text-brand-1 font-serif mt-1">
                         {branch.name}
@@ -406,13 +406,13 @@ const TempleScreen: React.FC = () => {
                   {/* Contact Details Cards */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-semibold text-gray-700">
                     <div className="p-4 bg-amber-50/70 rounded-2xl border border-amber-200 flex flex-col items-center text-center gap-1">
-                      <span className="text-amber-800 font-bold uppercase text-[10px]">📍 ලිපිනය (Address)</span>
+                      <span className="text-amber-800 font-bold uppercase text-[10px]">📍 Address</span>
                       <span className="font-bold text-ink">{branch.address}</span>
                     </div>
 
                     {(branch.phone1 || branch.phone2) && (
                       <div className="p-4 bg-emerald-50/70 rounded-2xl border border-emerald-200 flex flex-col items-center text-center gap-1">
-                        <span className="text-emerald-800 font-bold uppercase text-[10px]">📞 දුරකථන අංක (Phone)</span>
+                        <span className="text-emerald-800 font-bold uppercase text-[10px]">📞 Phone Numbers</span>
                         <span className="font-bold text-ink">
                           {branch.phone1} {branch.phone2 ? `/ ${branch.phone2}` : ""}
                         </span>
@@ -432,7 +432,7 @@ const TempleScreen: React.FC = () => {
                   {/* History / Description */}
                   {branch.history && (
                     <div className="p-5 bg-amber-50/40 rounded-2xl border border-amber-200/60 space-y-2">
-                      <h4 className="font-bold text-xs text-amber-900 uppercase">විහාරස්ථානයේ විස්තරය / ඓතිහාසික පසුබිම</h4>
+                      <h4 className="font-bold text-xs text-amber-900 uppercase">Temple History &amp; Description</h4>
                       <p className="text-gray-700 leading-relaxed font-medium text-xs sm:text-sm whitespace-pre-line text-justify">
                         {branch.history}
                       </p>
@@ -449,10 +449,10 @@ const TempleScreen: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b-2 border-amber-300/60 pb-4">
             <div>
               <h2 className="text-2xl sm:text-3xl font-black text-brand-1">
-                වැඩ ඉන්න හිමිවරුන් (Resident Monks)
+                Resident Clergy (Monks)
               </h2>
               <p className="text-xs text-subtle font-medium">
-                අපගේ විහාරස්ථාන පද්ධතියේ වැඩ සිටින පූජනීය මහා සංඝරත්නය
+                Venerable Resident Monks of Sāgaramati Pirivena Network
               </p>
             </div>
 
@@ -468,11 +468,11 @@ const TempleScreen: React.FC = () => {
 
           {loading ? (
             <div className="bg-white p-8 rounded-3xl text-center text-gray-500 font-semibold text-sm">
-              හිමිවරුන්ගේ තොරතුරු ලෝඩ් වෙමින් පවතී...
+              Loading monk details...
             </div>
           ) : monks.length === 0 ? (
             <div className="bg-white p-8 rounded-3xl text-center text-gray-500 font-semibold text-sm border border-gray-200">
-              තවම හිමිවරුන්ගේ විස්තර ඇතුළත් කර නොමැත.
+              No monk details added yet.
             </div>
           ) : (
             /* Large Top-Photo Monk Cards Grid */
@@ -514,10 +514,10 @@ const TempleScreen: React.FC = () => {
                         }`}
                       >
                         {monk.category === "CHIEF_NAYAKA"
-                          ? "ප්‍රධාන නායක හිමි"
+                          ? "Chief Nayaka Thero"
                           : monk.category === "STUDENT"
-                          ? "ශිෂ්‍ය හිමි"
-                          : "නේවාසික හිමි"}
+                          ? "Student Monk"
+                          : "Resident Monk"}
                       </span>
                     </div>
                   </div>
@@ -538,13 +538,13 @@ const TempleScreen: React.FC = () => {
                       </div>
                     )}
 
-                    {/* Current Temple Badge (දැනට වැඩසිටින විහාරස්ථානය) */}
+                    {/* Current Temple Badge */}
                     {monk.templeName && (
                       <div className="bg-gradient-to-r from-amber-50 via-amber-100/50 to-amber-50 p-3 rounded-2xl border border-amber-300/60 text-xs font-bold text-amber-950 flex items-center justify-center gap-2 shadow-sm text-center">
                         <span className="text-base shrink-0">🛕</span>
                         <div className="min-w-0">
                           <span className="text-[10px] font-bold text-amber-800 uppercase block leading-none mb-0.5">
-                            වැඩවෙසෙන විහාරස්ථානය
+                            Residing Temple
                           </span>
                           <span className="font-extrabold text-ink break-words leading-tight block">
                             {monk.templeName}
@@ -607,18 +607,18 @@ const TempleScreen: React.FC = () => {
           <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-brand-1/20 p-6 space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center border-b border-gray-100 pb-3">
               <h3 className="font-bold text-base text-ink">
-                {editingBranch ? "Edit Temple Branch" : "Add New Temple Branch (අලුත් විහාරස්ථානයක්)"}
+                {editingBranch ? "Edit Temple Branch" : "Add New Temple Branch"}
               </h3>
               <button onClick={() => setIsBranchModalOpen(false)} className="text-gray-400 font-bold hover:text-ink">✕</button>
             </div>
 
             <form onSubmit={handleSaveBranch} className="space-y-3 text-xs font-bold">
               <div>
-                <label className="block text-gray-700 mb-1">Temple Name (විහාරස්ථානයේ නම) *</label>
+                <label className="block text-gray-700 mb-1">Temple Name *</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. සාගරමති පිරිවෙන සහ ධනංජය රජමහා විහාරය"
+                  placeholder="e.g. Sāgaramati Pirivena & Dhananjaya Rajamaha Viharaya"
                   value={branchForm.name}
                   onChange={(e) => setBranchForm({ ...branchForm, name: e.target.value })}
                   className="w-full p-2.5 border rounded-xl font-medium outline-none focus:border-brand-1"
@@ -627,14 +627,14 @@ const TempleScreen: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-gray-700 mb-1">Category (වර්ගය)</label>
+                  <label className="block text-gray-700 mb-1">Category</label>
                   <select
                     value={branchForm.category}
                     onChange={(e) => setBranchForm({ ...branchForm, category: e.target.value })}
                     className="w-full p-2.5 border rounded-xl font-medium outline-none focus:border-brand-1"
                   >
-                    <option value="MAIN">ප්‍රධාන විහාරස්ථානය (Main)</option>
-                    <option value="BRANCH">ශාඛා විහාරස්ථානය (Branch)</option>
+                    <option value="MAIN">Main Temple</option>
+                    <option value="BRANCH">Branch Temple</option>
                   </select>
                 </div>
                 <div>
@@ -649,11 +649,11 @@ const TempleScreen: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700 mb-1">Address (ලිපිනය) *</label>
+                <label className="block text-gray-700 mb-1">Address *</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. කන්දෙගම, අරලගංවිල, පොළොන්නරුව"
+                  placeholder="e.g. Kandegama, Aralaganwila, Polonnaruwa"
                   value={branchForm.address}
                   onChange={(e) => setBranchForm({ ...branchForm, address: e.target.value })}
                   className="w-full p-2.5 border rounded-xl font-medium outline-none focus:border-brand-1"
@@ -703,7 +703,7 @@ const TempleScreen: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700 mb-1">Upload Temple Photo (ඡායාරූපය)</label>
+                <label className="block text-gray-700 mb-1">Upload Temple Photo</label>
                 <input
                   type="file"
                   accept="image/*"
@@ -725,7 +725,7 @@ const TempleScreen: React.FC = () => {
               )}
 
               <div>
-                <label className="block text-gray-700 mb-1">History / Description (විස්තරය)</label>
+                <label className="block text-gray-700 mb-1">History &amp; Description</label>
                 <textarea
                   rows={4}
                   value={branchForm.history}
@@ -769,11 +769,11 @@ const TempleScreen: React.FC = () => {
 
             <form onSubmit={handleSaveMonk} className="space-y-3 text-xs font-bold">
               <div>
-                <label className="block text-gray-700 mb-1">Monk's Name (නම) *</label>
+                <label className="block text-gray-700 mb-1">Monk's Name *</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. පූජ්‍ය කන්දේගම දීපවංසාලංකාර හිමි"
+                  placeholder="e.g. Ven. Kandegama Deepawansalankara Thero"
                   value={monkForm.name}
                   onChange={(e) => setMonkForm({ ...monkForm, name: e.target.value })}
                   className="w-full p-2.5 border rounded-xl font-medium outline-none focus:border-brand-1"
@@ -781,10 +781,10 @@ const TempleScreen: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700 mb-1">Designation / Role (තනතුර)</label>
+                <label className="block text-gray-700 mb-1">Designation / Role</label>
                 <input
                   type="text"
-                  placeholder="e.g. ප්‍රධාන නායක හිමි / සභාපති"
+                  placeholder="e.g. Chief Incumbent / President"
                   value={monkForm.designation}
                   onChange={(e) => setMonkForm({ ...monkForm, designation: e.target.value })}
                   className="w-full p-2.5 border rounded-xl font-medium outline-none focus:border-brand-1"
@@ -792,7 +792,7 @@ const TempleScreen: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700 mb-1">Current Temple (දැනට වැඩසිටින විහාරස්ථානය)</label>
+                <label className="block text-gray-700 mb-1">Current Residing Temple</label>
                 <input
                   type="text"
                   placeholder="Select or write temple name..."
@@ -810,15 +810,15 @@ const TempleScreen: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-gray-700 mb-1">Status / Category (තත්ත්වය)</label>
+                  <label className="block text-gray-700 mb-1">Status / Category</label>
                   <select
                     value={monkForm.category}
                     onChange={(e) => setMonkForm({ ...monkForm, category: e.target.value })}
                     className="w-full p-2.5 border rounded-xl font-medium outline-none focus:border-brand-1"
                   >
-                    <option value="CHIEF_NAYAKA">ප්‍රධාන නායක හිමි</option>
-                    <option value="RESIDENT">නේවාසික හිමි</option>
-                    <option value="STUDENT">ශිෂ්‍ය හිමි</option>
+                    <option value="CHIEF_NAYAKA">Chief Nayaka Thero</option>
+                    <option value="RESIDENT">Resident Monk</option>
+                    <option value="STUDENT">Student Monk</option>
                   </select>
                 </div>
                 <div>
@@ -834,7 +834,7 @@ const TempleScreen: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700 mb-1">Display Order (අනුපිළිවෙල)</label>
+                <label className="block text-gray-700 mb-1">Display Order</label>
                 <input
                   type="number"
                   value={monkForm.order}
@@ -844,7 +844,7 @@ const TempleScreen: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700 mb-1">Upload Photo (ඡායාරූපය)</label>
+                <label className="block text-gray-700 mb-1">Upload Photo</label>
                 <input
                   type="file"
                   accept="image/*"
@@ -866,7 +866,7 @@ const TempleScreen: React.FC = () => {
               )}
 
               <div>
-                <label className="block text-gray-700 mb-1">Bio / Description (විස්තරය)</label>
+                <label className="block text-gray-700 mb-1">Bio / Description</label>
                 <textarea
                   rows={3}
                   value={monkForm.bio}
