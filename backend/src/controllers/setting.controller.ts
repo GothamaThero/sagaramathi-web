@@ -2,8 +2,31 @@ import { Request, Response } from "express";
 import prisma from "../config/db.js";
 import { fetchAuditLogs } from "../services/audit.service.js";
 
-const DEFAULT_VISION = "ශ්‍රී සම්බුද්ධ ශාසනයේ චිරස්ථිතිය උදෙසා උසස් සද්ධර්ම අධ්‍යාපනයෙන්, ශාසනික ගුණධර්මයන්ගෙන් හා නූතන තාක්ෂණික කුසලතාවයන්ගෙන් පරිපූර්ණ බුද්ධිමත් ශිෂ්‍ය පරපුරක් හා ශ්‍රද්ධාබුද්ධියෙන් පිරි සමාජයක් බිහිකිරීම.";
-const DEFAULT_MISSION = "සාගරමති පිරිවෙණ මගින් පූජනීය සංඝරත්නයට හා සාමණේර හිමිවරුන්ට පරිපූර්ණ ත්‍රිපිටක ධර්ම අධ්‍යාපනය හා ශාසනික වගකීම් සපයමින්, දායක දායිකාවන්ට ශ්‍රද්ධා වර්ධනය කරවන දානමය පින්කම් හා ඩිජිටල් තාක්ෂණික සේවාවන් විනිවිදභාවයෙන් යුතුව ඉටුකිරීම.";
+const DEFAULT_VISION = `ගුණාත්මක අධ්‍යාපනයෙන් හා ආධ්‍යාත්මික සංවර්ධනයෙන් කලාපයේ ප්‍රමුඛතම භික්ෂු අධ්‍යාපන මධ්‍යස්ථානය බවට පත්වීම.
+
+To become the prominent Bhikkhu education center of the zone in quality and spiritual development.`;
+const DEFAULT_MISSION = `ලොව සදාචාරාත්මක හර පද්ධතීන්ට ගරු කරමින් විවෘත දෑසකින් හා සංවේදී මනසකින් මෙන් ම පිරිපුන් බුද්ධියකින් අනාගත ලෝකයේ අභියෝගයන්ට සාර්ථකව මුහුණ දිය හැකි ගුණ නැණ සපිරි මානව ප්‍රජාවක් ලොවට බිහි කිරීම අපගේ ඒකායන අරමුණයි.
+
+Our main purpose is to create a human virtuous community endowed with intellect, sensitivity, open-mindedness and matured capability to face future challenges successfully upholding moral values.`;
+const DEFAULT_GEETHAYA = `ජනමන නන්දිත
+සගගණ සේවිත
+තෙවළා බුදුබණ පද
+නිති දිළුවන
+සාගරමති මාතා.....
+
+සාගර ජල සේ
+දැනුම් සාගරේ
+පිහිනමු කිමිදෙමු
+නව මං සොයමින්
+අපි සැවෝමා.....
+
+මහසුප් සැරියුත් මහ යති පරපුර
+පැරකුම් විදුසක්විති පඬි පෙළපත
+සිරි ලක් සභිත අස්වැද්දූ ලෙස
+නගමු අපිත් ඒ සිරිලක් සභිත.....
+
+පද රචනය :
+කන්දේගම දීපවංසාලංකාර හිමි`;
 
 // Public: Get all settings
 export const getSettings = async (req: Request, res: Response): Promise<void> => {
@@ -12,6 +35,7 @@ export const getSettings = async (req: Request, res: Response): Promise<void> =>
     const map: Record<string, string> = {
       vision: DEFAULT_VISION,
       mission: DEFAULT_MISSION,
+      geethaya: DEFAULT_GEETHAYA,
       cert_title_en: "Official Certificate of Dana Offering",
       cert_title_si: "පුණ්‍යානුමෝදනා ශ්‍රී සන්නස් පත්‍රය",
       cert_org_en: "Sagaramati Buddhist Monastery & Pirivena",
@@ -82,12 +106,12 @@ export const getSettings = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-// Protected: Update setting (Admin / Super Admin)
+// Protected: Update setting (Super Admin Only)
 export const updateSetting = async (req: any, res: Response): Promise<void> => {
   try {
     const role = req.user?.role;
-    if (role !== "SUPER_ADMIN" && role !== "ADMIN") {
-      res.status(403).json({ message: "Only Admin or Super Admin can edit settings." });
+    if (role !== "SUPER_ADMIN") {
+      res.status(403).json({ message: "Only Super Admin can edit settings." });
       return;
     }
 

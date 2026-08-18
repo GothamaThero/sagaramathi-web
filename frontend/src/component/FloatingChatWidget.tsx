@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { API_BASE_URL } from "../libs/api";
+import { getSocket } from "../libs/socket";
 
 interface MessageItem {
   id: number;
@@ -19,8 +20,10 @@ export const FloatingChatWidget: React.FC = () => {
   const [guestName, setGuestName] = useState<string>("");
   const [isGuestNameSet, setIsGuestNameSet] = useState<boolean>(false);
   const [conversationId, setConversationId] = useState<string>("");
+  const [isPeerTyping, setIsPeerTyping] = useState<boolean>(false);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const typingTimeoutRef = useRef<any>(null);
 
   // Initialize Conversation ID & Guest Name
   useEffect(() => {
@@ -44,18 +47,38 @@ export const FloatingChatWidget: React.FC = () => {
     }
   }, [user]);
 
-  // Poll messages periodically when chat is open and tab is active
+  // Connect to Socket.io WebSockets when chat is active
   useEffect(() => {
-    let interval: any;
-    if (isOpen && conversationId) {
-      fetchMessages();
-      interval = setInterval(() => {
-        if (document.visibilityState === "visible") {
-          fetchMessages();
-        }
-      }, 3000);
-    }
-    return () => clearInterval(interval);
+    if (!conversationId) return;
+
+    fetchMessages();
+
+    const socket = getSocket();
+    socket.emit("join_conversation", conversationId);
+
+    const handleNewMessage = (newMsg: MessageItem) => {
+      if (newMsg.conversationId === conversationId) {
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === newMsg.id)) return prev;
+          return [...prev, newMsg];
+        });
+        setIsPeerTyping(false);
+      }
+    };
+
+    const handleTypingStatus = (data: { conversationId: string; isTyping: boolean }) => {
+      if (data.conversationId === conversationId) {
+        setIsPeerTyping(data.isTyping);
+      }
+    };
+
+    socket.on("new_message", handleNewMessage);
+    socket.on("typing_status", handleTypingStatus);
+
+    return () => {
+      socket.off("new_message", handleNewMessage);
+      socket.off("typing_status", handleTypingStatus);
+    };
   }, [isOpen, conversationId]);
 
   // Scroll to bottom when messages update
@@ -63,7 +86,7 @@ export const FloatingChatWidget: React.FC = () => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, isPeerTyping]);
 
   const fetchMessages = async () => {
     if (!conversationId) return;
@@ -88,6 +111,27 @@ export const FloatingChatWidget: React.FC = () => {
     setIsGuestNameSet(true);
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputText(e.target.value);
+
+    // Emit typing status to socket
+    const socket = getSocket();
+    socket.emit("typing", {
+      conversationId,
+      isTyping: true,
+      senderName: user?.name || guestName || "Guest"
+    });
+
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      socket.emit("typing", {
+        conversationId,
+        isTyping: false,
+        senderName: user?.name || guestName || "Guest"
+      });
+    }, 1500);
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputText.trim() || !conversationId) return;
@@ -95,11 +139,29 @@ export const FloatingChatWidget: React.FC = () => {
     const messageText = inputText.trim();
     setInputText("");
 
+    const socket = getSocket();
+    socket.emit("typing", {
+      conversationId,
+      isTyping: false,
+      senderName: user?.name || guestName || "Guest"
+    });
+
+    // Send via socket for instant broadcast
+    socket.emit("send_message", {
+      conversationId,
+      guestName: guestName || "Guest",
+      message: messageText,
+      senderId: user?.id,
+      senderRole: user?.role || "GUEST",
+      senderName: user?.name || guestName || "Guest"
+    });
+
+    // Fallback REST call for DB persistence guarantee
     try {
       const headers: any = { "Content-Type": "application/json" };
       if (token) headers["Authorization"] = `Bearer ${token}`;
 
-      const res = await fetch(`${API_BASE_URL}/chat/send`, {
+      await fetch(`${API_BASE_URL}/chat/send`, {
         method: "POST",
         headers,
         body: JSON.stringify({
@@ -108,12 +170,8 @@ export const FloatingChatWidget: React.FC = () => {
           message: messageText,
         }),
       });
-
-      if (res.ok) {
-        fetchMessages();
-      }
     } catch (e) {
-      console.error("Error sending message:", e);
+      console.error("Error sending message via HTTP fallback:", e);
     }
   };
 
@@ -202,6 +260,12 @@ export const FloatingChatWidget: React.FC = () => {
                     );
                   })
                 )}
+                {isPeerTyping && (
+                  <div className="flex items-center gap-1.5 text-[11px] text-amber-700 font-medium italic px-2 animate-pulse">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-ping"></span>
+                    <span>Admin is typing a reply...</span>
+                  </div>
+                )}
               </div>
 
               {/* Message Input Box */}
@@ -209,7 +273,7 @@ export const FloatingChatWidget: React.FC = () => {
                 <input
                   type="text"
                   value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
+                  onChange={handleInputChange}
                   placeholder="Type a message..."
                   className="flex-1 px-3.5 py-2 rounded-xl text-xs border border-brand-1/15 bg-surface-2 focus:outline-none focus:border-brand-1 text-ink"
                 />

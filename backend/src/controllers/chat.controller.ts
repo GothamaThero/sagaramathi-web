@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../config/db.js";
+import { getIO } from "../services/socket.service.js";
 
 // Send a chat message (Public: Guests & Users can send to Admin, Admin can reply)
 export const sendMessage = async (req: any, res: Response): Promise<void> => {
@@ -43,6 +44,28 @@ export const sendMessage = async (req: any, res: Response): Promise<void> => {
         isRead: false,
       },
     });
+
+    // Emit real-time WebSockets events to room and admin channel
+    const io = getIO();
+    if (io) {
+      io.to(`conversation_${finalConversationId}`).emit("new_message", newMessage);
+      io.to("admin_room").emit("conversation_updated", {
+        conversationId: finalConversationId,
+        lastMessage: newMessage.message,
+        lastSenderName: newMessage.senderName,
+        lastSenderRole: newMessage.senderRole,
+        updatedAt: newMessage.createdAt,
+        newMessage
+      });
+
+      const unreadCount = await (prisma as any).chatMessage.count({
+        where: {
+          isRead: false,
+          senderRole: { notIn: ["ADMIN", "SUPER_ADMIN"] }
+        }
+      });
+      io.to("admin_room").emit("unread_count_updated", { unreadCount });
+    }
 
     res.status(201).json({
       message: "Message sent successfully",

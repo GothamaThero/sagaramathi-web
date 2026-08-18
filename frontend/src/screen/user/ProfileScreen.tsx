@@ -78,7 +78,7 @@ export const ProfileScreen: React.FC = () => {
       }
 
       // Fetch all posts to filter user's posts & saved posts
-      const postsRes = await fetch(`${API_BASE_URL}/posts`, {
+      const postsRes = await fetch(`${API_BASE_URL}/posts?limit=all`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
       if (postsRes.ok) {

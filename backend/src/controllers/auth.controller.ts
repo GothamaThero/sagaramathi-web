@@ -251,9 +251,21 @@ export const getUserPublicProfile = async (req: Request, res: Response): Promise
 export const adminResetPassword = async (req: any, res: Response): Promise<void> => {
   try {
     const { userId, newPassword } = req.body;
+    const requesterRole = req.user?.role;
 
     if (!userId || !newPassword) {
       res.status(400).json({ status: "error", message: "User ID and new password are required" });
+      return;
+    }
+
+    const targetUser = await prisma.user.findUnique({ where: { id: Number(userId) } });
+    if (!targetUser) {
+      res.status(404).json({ status: "error", message: "Target user not found" });
+      return;
+    }
+
+    if (targetUser.role === "SUPER_ADMIN" && requesterRole !== "SUPER_ADMIN") {
+      res.status(403).json({ status: "error", message: "Access denied: Only a Super Admin can reset a Super Admin's password" });
       return;
     }
 

@@ -5,7 +5,7 @@ import { UserModal } from "../../component/UserModal";
 import { useAuth } from "../../context/AuthContext";
 
 const UsersScreen: React.FC = () => {
-  const { token } = useAuth();
+  const { token, user: currentUser } = useAuth();
   const [users, setUsers] = useState<IUser[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -167,55 +167,69 @@ const UsersScreen: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-brand-1/4">
-                {filteredUsers.map((user) => (
-                  <tr key={user.id} className="group hover:bg-brand-1/[0.02] transition-colors">
-                    <td className="px-5 py-4 text-subtle text-xs font-mono">{user.id}</td>
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-1 to-brand-5 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow-sm shadow-brand-1/20">
-                          {user.name.charAt(0).toUpperCase()}
+                {filteredUsers.map((targetUser) => {
+                  const isTargetSuperAdmin = targetUser.role === "SUPER_ADMIN";
+                  const isCurrentSuperAdmin = currentUser?.role === "SUPER_ADMIN";
+                  const canManageUser = isCurrentSuperAdmin || !isTargetSuperAdmin;
+
+                  return (
+                    <tr key={targetUser.id} className="group hover:bg-brand-1/[0.02] transition-colors">
+                      <td className="px-5 py-4 text-subtle text-xs font-mono">{targetUser.id}</td>
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-1 to-brand-5 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow-sm shadow-brand-1/20">
+                            {targetUser.name.charAt(0).toUpperCase()}
+                          </div>
+                          <span className="text-sm font-semibold text-ink">{targetUser.name}</span>
                         </div>
-                        <span className="text-sm font-semibold text-ink">{user.name}</span>
-                      </div>
-                    </td>
-                    <td className="px-5 py-4 text-sm text-muted">{user.email}</td>
-                    <td className="px-5 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold border ${
-                        user.role === "ADMIN"
-                          ? "bg-brand-1/8 text-brand-1 border-brand-1/20"
-                          : "bg-surface-2 text-muted border-brand-1/8"
-                      }`}>
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="px-5 py-4 text-xs text-subtle">
-                      {new Date(user.createdAt).toLocaleDateString("en-GB")}
-                    </td>
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => { setEditingUser(user); setIsModalOpen(true); }}
-                          className="px-3 py-1 bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 rounded text-xs font-semibold transition-colors"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleResetPassword(user.id)}
-                          className="px-3 py-1 bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 rounded text-xs font-semibold transition-colors"
-                          title="Reset Password"
-                        >
-                          Reset PW
-                        </button>
-                        <button
-                          onClick={() => setDeletingUser(user)}
-                          className="px-3 py-1 bg-white border border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 rounded text-xs font-semibold transition-colors"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="px-5 py-4 text-sm text-muted">{targetUser.email}</td>
+                      <td className="px-5 py-4">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold border ${
+                          targetUser.role === "SUPER_ADMIN"
+                            ? "bg-purple-100 text-purple-800 border-purple-200"
+                            : targetUser.role === "ADMIN"
+                            ? "bg-brand-1/8 text-brand-1 border-brand-1/20"
+                            : "bg-surface-2 text-muted border-brand-1/8"
+                        }`}>
+                          {targetUser.role}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4 text-xs text-subtle">
+                        {new Date(targetUser.createdAt).toLocaleDateString("en-GB")}
+                      </td>
+                      <td className="px-5 py-4">
+                        {canManageUser ? (
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => { setEditingUser(targetUser); setIsModalOpen(true); }}
+                              className="px-3 py-1 bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 rounded text-xs font-semibold transition-colors"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleResetPassword(targetUser.id)}
+                              className="px-3 py-1 bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 rounded text-xs font-semibold transition-colors"
+                              title="Reset Password"
+                            >
+                              Reset PW
+                            </button>
+                            <button
+                              onClick={() => setDeletingUser(targetUser)}
+                              className="px-3 py-1 bg-white border border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 rounded text-xs font-semibold transition-colors"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-800 border border-amber-200/80 rounded-lg text-xs font-semibold select-none" title="Super Admin accounts can only be managed by Super Admin">
+                            🔒 Protected
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

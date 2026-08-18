@@ -6,7 +6,7 @@ const router = Router();
 
 router.get("/", getSettings);
 router.get("/audit-logs", verifyToken, requireRole(["ADMIN", "SUPER_ADMIN"]), getAuditLogs);
-router.put("/", verifyToken, updateSetting);
+router.put("/", verifyToken, requireRole(["SUPER_ADMIN"]), updateSetting);
 
 export default router;
 

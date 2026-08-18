@@ -12,6 +12,9 @@ const HeaderLayout: React.FC = () => {
     { name: "Home", path: "/" },
     { name: "Dana Offerings", path: "/dana" },
     { name: "About Us", path: "/about" },
+    { name: "Our Temple", path: "/temple" },
+    { name: "Gallery", path: "/gallery" },
+    { name: "Contact Us", path: "/contact" },
   ];
 
   return (

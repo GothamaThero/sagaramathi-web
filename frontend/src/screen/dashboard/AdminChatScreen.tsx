@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { API_BASE_URL } from "../../libs/api";
+import { getSocket } from "../../libs/socket";
 
 interface ConversationItem {
   conversationId: string;
@@ -28,34 +29,73 @@ export const AdminChatScreen: React.FC = () => {
   const [replyText, setReplyText] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [isPeerTyping, setIsPeerTyping] = useState<boolean>(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const typingTimeoutRef = useRef<any>(null);
+  const selectedConvRef = useRef<ConversationItem | null>(null);
 
-  // Poll conversations every 3 seconds
+  useEffect(() => {
+    selectedConvRef.current = selectedConversation;
+  }, [selectedConversation]);
+
+  // Connect to Socket.io WebSockets as Admin
   useEffect(() => {
     fetchConversations();
-    const interval = setInterval(() => {
+
+    const socket = getSocket();
+    socket.emit("join_admin");
+
+    const handleConversationUpdated = (data: { conversationId: string; lastMessage: string; lastSenderName: string; lastSenderRole: string; updatedAt: string; newMessage?: MessageItem }) => {
       fetchConversations();
-    }, 3000);
-    return () => clearInterval(interval);
+      if (selectedConvRef.current && selectedConvRef.current.conversationId === data.conversationId && data.newMessage) {
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === data.newMessage!.id)) return prev;
+          return [...prev, data.newMessage!];
+        });
+      }
+    };
+
+    const handleNewMessage = (newMsg: MessageItem) => {
+      if (selectedConvRef.current && selectedConvRef.current.conversationId === newMsg.conversationId) {
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === newMsg.id)) return prev;
+          return [...prev, newMsg];
+        });
+        setIsPeerTyping(false);
+      }
+    };
+
+    const handleTypingStatus = (data: { conversationId: string; isTyping: boolean }) => {
+      if (selectedConvRef.current && selectedConvRef.current.conversationId === data.conversationId) {
+        setIsPeerTyping(data.isTyping);
+      }
+    };
+
+    socket.on("conversation_updated", handleConversationUpdated);
+    socket.on("new_message", handleNewMessage);
+    socket.on("typing_status", handleTypingStatus);
+
+    return () => {
+      socket.off("conversation_updated", handleConversationUpdated);
+      socket.off("new_message", handleNewMessage);
+      socket.off("typing_status", handleTypingStatus);
+    };
   }, [token]);
 
-  // Poll messages for active conversation
+  // Join selected conversation room on change
   useEffect(() => {
-    let interval: any;
     if (selectedConversation) {
       fetchMessages(selectedConversation.conversationId);
-      interval = setInterval(() => {
-        fetchMessages(selectedConversation.conversationId);
-      }, 3000);
+      const socket = getSocket();
+      socket.emit("join_conversation", selectedConversation.conversationId);
     }
-    return () => clearInterval(interval);
   }, [selectedConversation, token]);
 
   // Auto scroll to bottom of messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, isPeerTyping]);
 
   const fetchConversations = async () => {
     try {
@@ -96,7 +136,29 @@ export const AdminChatScreen: React.FC = () => {
 
   const handleSelectConversation = (conv: ConversationItem) => {
     setSelectedConversation(conv);
+    setIsPeerTyping(false);
     fetchMessages(conv.conversationId);
+  };
+
+  const handleReplyInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setReplyText(e.target.value);
+
+    if (!selectedConversation) return;
+    const socket = getSocket();
+    socket.emit("typing", {
+      conversationId: selectedConversation.conversationId,
+      isTyping: true,
+      senderName: user?.name || "Admin"
+    });
+
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      socket.emit("typing", {
+        conversationId: selectedConversation.conversationId,
+        isTyping: false,
+        senderName: user?.name || "Admin"
+      });
+    }, 1500);
   };
 
   const handleSendReply = async (e: React.FormEvent) => {
@@ -106,8 +168,26 @@ export const AdminChatScreen: React.FC = () => {
     const messageText = replyText.trim();
     setReplyText("");
 
+    const socket = getSocket();
+    socket.emit("typing", {
+      conversationId: selectedConversation.conversationId,
+      isTyping: false,
+      senderName: user?.name || "Admin"
+    });
+
+    // Send via socket for instant broadcast
+    socket.emit("send_message", {
+      conversationId: selectedConversation.conversationId,
+      guestName: user?.name || "Admin",
+      message: messageText,
+      senderId: user?.id,
+      senderRole: user?.role || "ADMIN",
+      senderName: user?.name || "Admin"
+    });
+
+    // Fallback REST call for DB persistence guarantee
     try {
-      const res = await fetch(`${API_BASE_URL}/chat/send`, {
+      await fetch(`${API_BASE_URL}/chat/send`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -119,13 +199,9 @@ export const AdminChatScreen: React.FC = () => {
           message: messageText,
         }),
       });
-
-      if (res.ok) {
-        fetchMessages(selectedConversation.conversationId);
-        fetchConversations();
-      }
+      fetchConversations();
     } catch (e) {
-      console.error("Error sending reply:", e);
+      console.error("Error sending reply via HTTP fallback:", e);
     }
   };
 
@@ -266,6 +342,12 @@ export const AdminChatScreen: React.FC = () => {
                     </div>
                   );
                 })}
+                {isPeerTyping && (
+                  <div className="flex items-center gap-1.5 text-[11px] text-amber-700 font-medium italic px-2 animate-pulse">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-ping"></span>
+                    <span>User/Guest is typing a message...</span>
+                  </div>
+                )}
                 <div ref={messagesEndRef} />
               </div>
 
@@ -274,7 +356,7 @@ export const AdminChatScreen: React.FC = () => {
                 <input
                   type="text"
                   value={replyText}
-                  onChange={(e) => setReplyText(e.target.value)}
+                  onChange={handleReplyInputChange}
                   placeholder="Type your reply and press Enter..."
                   className="flex-1 px-4 py-2.5 rounded-xl text-xs border border-brand-1/20 bg-surface-2 focus:outline-none focus:border-brand-1 text-ink"
                 />

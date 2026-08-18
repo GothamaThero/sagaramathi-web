@@ -112,11 +112,18 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     }
 
     const { name, email, password, role } = req.body;
+    const requesterRole = (req as any).user?.role;
 
     // Check if user exists
     const existingUser = await prisma.user.findUnique({ where: { id } });
     if (!existingUser) {
       res.status(404).json({ status: "error", message: "User not found" });
+      return;
+    }
+
+    // Protection: Non-Super Admin cannot modify a Super Admin account
+    if (existingUser.role === "SUPER_ADMIN" && requesterRole !== "SUPER_ADMIN") {
+      res.status(403).json({ status: "error", message: "Access denied: Only a Super Admin can modify a Super Admin account" });
       return;
     }
 
@@ -167,9 +174,16 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
+    const requesterRole = (req as any).user?.role;
     const existingUser = await prisma.user.findUnique({ where: { id } });
     if (!existingUser) {
       res.status(404).json({ status: "error", message: "User not found" });
+      return;
+    }
+
+    // Protection: Non-Super Admin cannot delete a Super Admin account
+    if (existingUser.role === "SUPER_ADMIN" && requesterRole !== "SUPER_ADMIN") {
+      res.status(403).json({ status: "error", message: "Access denied: Only a Super Admin can delete a Super Admin account" });
       return;
     }
 

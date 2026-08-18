@@ -1,5 +1,7 @@
 import express from "express";
+import { createServer } from "http";
 import cors from "cors";
+import compression from "compression";
 import path from "path";
 import { ensureDatabaseExists } from "./config/dbInit.js";
 import userRoutes from "./routes/user.routes.js";
@@ -13,7 +15,10 @@ import settingRoutes from "./routes/setting.routes.js";
 import chatRoutes from "./routes/chat.routes.js";
 import whatsappReportRoutes from "./routes/whatsappReport.routes.js";
 import danaConfirmationRoutes from "./routes/danaConfirmation.routes.js";
+import templeRoutes from "./routes/temple.routes.js";
+import galleryRoutes from "./routes/gallery.routes.js";
 import { runAutomatedDanaRemindersCron } from "./services/cron.service.js";
+import { initSocketServer } from "./services/socket.service.js";
 
 // Import Custom Middlewares
 import { securityHeaders } from "./middleware/security.middleware.js";
@@ -22,6 +27,13 @@ import { apiRateLimiter, authRateLimiter } from "./middleware/rateLimiter.middle
 import { notFoundHandler, errorHandler } from "./middleware/error.middleware.js";
 
 const server = express();
+const httpServer = createServer(server);
+
+// Initialize Socket.io WebSockets Server
+initSocketServer(httpServer);
+
+// HTTP Response Compression (Gzip / Brotli)
+server.use(compression());
 
 // Security and Logging Middlewares
 server.use(securityHeaders);
@@ -55,8 +67,12 @@ server.get("/", (req, res) => {
   });
 });
 
-// Serve static uploads
-server.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+// Serve static uploads with browser caching headers (7 days)
+server.use("/uploads", express.static(path.join(process.cwd(), "uploads"), {
+  maxAge: "7d",
+  etag: true,
+  lastModified: true
+}));
 
 // Global API Rate Limiter
 server.use("/api", apiRateLimiter);
@@ -76,6 +92,8 @@ server.use("/api/settings", settingRoutes);
 server.use("/api/chat", chatRoutes);
 server.use("/api/whatsapp-reports", whatsappReportRoutes);
 server.use("/api/dana-confirm", danaConfirmationRoutes);
+server.use("/api/temple", templeRoutes);
+server.use("/api/gallery", galleryRoutes);
 
 // 404 Not Found & Global Error Handling Middlewares
 server.use(notFoundHandler);
@@ -83,8 +101,8 @@ server.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 
-server.listen(PORT, async () => {
-  console.log(`Server is running on port ${PORT}`);
+httpServer.listen(PORT, async () => {
+  console.log(`Server is running on port ${PORT} with WebSockets enabled`);
   // Runtime database auto-creation and schema sync
   await ensureDatabaseExists();
   // Trigger initial automated Dana reminders cron check

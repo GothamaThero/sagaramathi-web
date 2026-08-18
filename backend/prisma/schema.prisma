@@ -49,6 +49,9 @@ model Post {
   likes        PostLike[]
   comments     PostComment[]
   savedBy      SavedPost[]
+
+  @@index([userId])
+  @@index([createdAt])
 }
 
 model PostLike {
@@ -72,6 +75,9 @@ model PostComment {
   userName  String
   content   String   @db.Text
   createdAt DateTime @default(now())
+
+  @@index([postId])
+  @@index([userId])
 }
 
 model Story {
@@ -117,6 +123,10 @@ model FinancialTransaction {
   user        User?           @relation("UserTransactions", fields: [userId], references: [id])
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
+
+  @@index([type])
+  @@index([date])
+  @@index([userId])
 }
 
 model DanaBooking {
@@ -140,6 +150,11 @@ model DanaBooking {
   approvedBy   User? @relation("ApprovedBookings", fields: [approvedById], references: [id])
   
   payments  DanaPayment[]
+
+  @@index([status])
+  @@index([month])
+  @@index([userId])
+  @@index([approvedById])
 }
 
 model DanaPayment {
@@ -158,6 +173,10 @@ model DanaPayment {
   
   approvedById      Int?
   approvedBy        User?       @relation("ApprovedPayments", fields: [approvedById], references: [id])
+
+  @@index([status])
+  @@index([danaBookingId])
+  @@index([approvedById])
 }
 
 model SiteSetting {
@@ -190,5 +209,58 @@ model AuditLog {
   details   String?  @db.Text
   ipAddress String?
   createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
 }
+
+model ResidentMonk {
+  id          Int      @id @default(autoincrement())
+  name        String
+  designation String?
+  templeName  String?
+  photoUrl    String?
+  phone       String?
+  bio         String?  @db.Text
+  category    String   @default("RESIDENT") // CHIEF_NAYAKA, RESIDENT, STUDENT
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([order])
+}
+
+model GalleryItem {
+  id          Int      @id @default(autoincrement())
+  title       String?
+  type        String   @default("PHOTO") // PHOTO, VIDEO
+  url         String   @db.Text
+  description String?  @db.Text
+  album       String?  @default("GENERAL")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([type])
+  @@index([createdAt])
+}
+
+model TempleBranch {
+  id          Int      @id @default(autoincrement())
+  name        String
+  category    String   @default("BRANCH") // MAIN, BRANCH
+  address     String
+  phone1      String?
+  phone2      String?
+  whatsapp    String?
+  email       String?
+  history     String?  @db.Text
+  imageUrl    String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([order])
+}
+
+
 

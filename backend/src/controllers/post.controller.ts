@@ -35,21 +35,31 @@ const extractUserId = (userObj: any): number | null => {
   return isNaN(num) ? null : num;
 };
 
-// GET /api/posts - Fetch all posts with likes & comments
+// GET /api/posts - Fetch posts with likes & comments (supports pagination)
 export const getPosts = async (req: Request, res: Response): Promise<void> => {
   try {
     const currentUserId = extractUserId((req as any).user);
 
-    const posts = await prisma.post.findMany({
-      orderBy: { createdAt: "desc" },
-      include: {
-        likes: true,
-        comments: {
-          orderBy: { createdAt: "asc" }
-        },
-        savedBy: currentUserId ? { where: { userId: currentUserId } } : false
-      }
-    });
+    const isAll = req.query.limit === "all";
+    const page = Math.max(1, parseInt(req.query.page as string, 10) || 1);
+    const limit = isAll ? undefined : Math.max(1, parseInt(req.query.limit as string, 10) || 5);
+    const skip = isAll || !limit ? undefined : (page - 1) * limit;
+
+    const [totalPosts, posts] = await prisma.$transaction([
+      prisma.post.count(),
+      prisma.post.findMany({
+        orderBy: { createdAt: "desc" },
+        ...(skip !== undefined && { skip }),
+        ...(limit !== undefined && { take: limit }),
+        include: {
+          likes: true,
+          comments: {
+            orderBy: { createdAt: "asc" }
+          },
+          savedBy: currentUserId ? { where: { userId: currentUserId } } : false
+        }
+      })
+    ]);
 
     const formattedPosts = posts.map(post => {
       const userReaction = currentUserId
@@ -87,7 +97,21 @@ export const getPosts = async (req: Request, res: Response): Promise<void> => {
       };
     });
 
-    res.status(200).json({ status: "success", data: formattedPosts });
+    const activeLimit = limit || totalPosts || 1;
+    const totalPages = isAll ? 1 : Math.ceil(totalPosts / activeLimit) || 1;
+
+    res.status(200).json({
+      status: "success",
+      data: formattedPosts,
+      pagination: {
+        page: isAll ? 1 : page,
+        limit: isAll ? totalPosts : activeLimit,
+        totalPosts,
+        totalPages,
+        hasMore: isAll ? false : page < totalPages,
+        hasPrev: isAll ? false : page > 1
+      }
+    });
   } catch (error) {
     console.error("Error fetching posts:", error);
     res.status(500).json({ status: "error", message: "Failed to fetch posts" });

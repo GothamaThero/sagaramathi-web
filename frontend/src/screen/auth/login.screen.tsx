@@ -45,38 +45,29 @@ const LoginScreen: React.FC = () => {
     } finally {
       setLoading(false);
     }
-
   };
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex">
 
       {/* ── Left brand panel ─────────────────────────────── */}
-      <div className="hidden lg:flex lg:w-1/2 bg-brand-1 flex-col items-center justify-center p-16 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-brand-1 flex-col items-center justify-center p-12 relative overflow-hidden">
         {/* decorative circles */}
         <div className="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-white/5" />
         <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-white/5" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-white/[0.03]" />
 
-        <div className="relative z-10 text-center space-y-6 max-w-sm">
-          <div className="w-20 h-20 rounded-3xl bg-white/15 border border-white/20 flex items-center justify-center text-white font-black text-4xl mx-auto shadow-2xl">
-            S
-          </div>
-          <div>
-            <h2 className="text-3xl font-black text-white leading-tight">
-              Sagaramati<br />Pirivena
+        <div className="relative z-10 text-center space-y-6 max-w-md">
+          <div className="space-y-3">
+            <span className="text-[11px] font-bold text-amber-200 uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full border border-white/15">
+              ඓතිහාසික පින්බිම &amp; පිරිවෙන
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black text-white leading-tight font-serif pt-2">
+              සාගරමති පිරිවෙන සහ ධනංජය රජමහා විහාරය
             </h2>
-            <p className="text-white/60 text-sm mt-3 leading-relaxed">
-              Monastery Management System<br />
-              Full Stack Web Application
+            <p className="text-white/80 text-xs sm:text-sm leading-relaxed max-w-xs mx-auto">
+              කන්දෙගම, අරලගංවිල, පොළොන්නරුව.
             </p>
-          </div>
-          <div className="grid grid-cols-2 gap-3 pt-4">
-            {["React 19", "Node.js", "Prisma ORM", "MySQL"].map((tech) => (
-              <div key={tech} className="bg-white/10 border border-white/15 rounded-xl py-2 px-3 text-white/80 text-xs font-medium text-center">
-                {tech}
-              </div>
-            ))}
           </div>
         </div>
       </div>
@@ -87,58 +78,66 @@ const LoginScreen: React.FC = () => {
 
           {/* Logo (mobile only) */}
           <div className="lg:hidden text-center mb-8">
-            <div className="w-14 h-14 rounded-2xl bg-brand-1 flex items-center justify-center text-white font-black text-2xl mx-auto mb-4 shadow-xl shadow-brand-1/20">
-              S
-            </div>
+            <img src="/logo.png" alt="Sagaramati Emblem" className="w-16 h-16 object-contain mx-auto mb-3 filter drop-shadow-md" />
+            <h2 className="text-lg font-black text-brand-1">සාගරමති පිරිවෙන</h2>
           </div>
 
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-ink">Sign In</h1>
-            <p className="text-subtle text-sm mt-1">Access your account</p>
+          <div className="mb-6">
+            <h1 className="text-3xl font-black text-brand-1 font-serif">ඇතුළු වන්න (Sign In)</h1>
+            <p className="text-subtle text-xs sm:text-sm font-semibold mt-1">සාගරමති පිරිවෙන් පද්ධතියට ප්‍රවේශ වන්න</p>
           </div>
 
-          <div className="card-padded space-y-5">
+          <div className="bg-white rounded-3xl p-8 shadow-xl border border-brand-1/10 space-y-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="form-label">Email</label>
-                <input type="email" required value={email}
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                  විද්‍යුත් තැපෑල (Email Address) *
+                </label>
+                <input
+                  type="email"
+                  required
+                  placeholder="admin@sagaramathi.lk"
+                  value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="user@example.com" className="form-input" />
+                  className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-brand-1 focus:ring-2 focus:ring-brand-1/20 font-medium bg-white text-ink text-sm"
+                />
               </div>
+
               <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="form-label !mb-0">Password</label>
-                  <button type="button" className="text-xs text-brand-1 hover:underline">
-                    Forgot Password?
-                  </button>
-                </div>
-                <input type="password" required value={password}
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                  මුරපදය (Password) *
+                </label>
+                <input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••" className="form-input" />
+                  className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-brand-1 focus:ring-2 focus:ring-brand-1/20 font-medium bg-white text-ink text-sm"
+                />
               </div>
-              <button type="submit" disabled={loading} className="btn-primary w-full">
-                {loading ? "Signing In..." : "Sign In"}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3.5 bg-brand-1 hover:bg-emerald-800 text-white font-bold text-sm rounded-xl shadow-lg shadow-brand-1/25 disabled:opacity-50 transition-colors mt-2"
+              >
+                {loading ? "ඇතුළු වෙමින් පවතී..." : "ඇතුළු වන්න (Sign In)"}
               </button>
             </form>
 
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-brand-1/6" />
-              </div>
-              <div className="relative text-center">
-                <span className="bg-surface px-3 text-xs text-subtle">or</span>
-              </div>
+            <div className="pt-4 text-center border-t border-gray-100">
+              <p className="text-xs text-subtle font-medium">
+                නව ගිණුමක් නොමැතිද?{" "}
+                <Link to="/register" className="font-bold text-brand-1 hover:underline">
+                  මෙතැනින් ලියාපදිංචි වන්න (Register here)
+                </Link>
+              </p>
             </div>
-
-            <p className="text-center text-sm text-subtle">
-              Don't have an account?{" "}
-              <Link to="/register" className="text-brand-1 font-semibold hover:underline">
-                Register
-              </Link>
-            </p>
           </div>
         </div>
       </div>
+
     </div>
   );
 };

@@ -58,7 +58,7 @@
 body {
   background-color: var(--c-bg);
   color: var(--c-ink);
-  font-family: 'Bindumathi', 'FM Bindumathi', 'DL Bindumathi', 'Noto Serif Sinhala', 'Abhaya Libre', 'Times New Roman', Times, serif;
+  font-family: 'Noto Sans Sinhala', 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
